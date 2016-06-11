@@ -1,0 +1,183 @@
+
+--------------------------------Executing XML---------------------------------------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<blocks name="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/">
+  <block block-id="0">
+    <variable name="b1Var1" type="int"/>
+    <variable name="b1Var2" type="string"/>
+    <variable name="addVal" type="int"/>
+    <export execution-order="0" query-file="export_vars.hql"/>
+    <export execution-order="2" query-file="add_to_vars.hql"/>
+    <if execution-order="1" condition=":b1Var1 &gt; 2">
+      <if execution-order="1" condition=":b1Var2 == 'abc'">
+        <query execution-order="0" query-file="insert_into_dummy.hql"/>
+      </if>
+      <query execution-order="0" query-file="pre_if.hql"/>
+      <query execution-order="2" query-file="post_if.hql"/>
+    </if>
+    <query execution-order="3" query-file="insert_into_dummy_plus.hql"/>
+  </block>
+</blocks>
+
+
+------------------------------------------------------------------------------------------
+
+Starting execution of blocks:hive-blocks
+
+--------------------------------------------------------
+Executing Block[0]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------
+Executing Export[0] IN BLOCK[0]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+EXPORT ORIGINAL QUERY=select 3 b1Var1, 'abc' b1Var2 from default.dual limit 1
+
+EXPORT TRANSLATED QUERY=select 3 b1Var1, 'abc' b1Var2 from default.dual limit 1
+
+
+--------------------------------------------------------------------------------
+
+log4j:WARN No appenders could be found for logger (org.apache.hive.jdbc.Utils).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+
+--------------------------------------------------------
+Executing IF[1] IN BLOCK[0]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+IF ORIGINAL QUERY=SELECT :b1Var1 > 2 FROM default.dual LIMIT 1
+
+IF TRANSLATED QUERY=SELECT 3 > 2 FROM default.dual LIMIT 1
+
+--------------------------------------------------------------------------------
+
+
+....................................
+
+IF:BLOCK[0]IF[1] RESULT=true
+
+....................................
+
+
+--------------------------------------------------------
+Executing QUERY[0] IN BLOCK[0]IF[1]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+ORIGINAL QUERY=select 'pre' from default.dual limit 1
+
+
+TRANSLATED QUERY=select 'pre' from default.dual limit 1
+
+
+--------------------------------------------------------------------------------
+
+0 rows updated
+
+--------------------------------------------------------
+Executing IF[1] IN BLOCK[0]IF[1]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+IF ORIGINAL QUERY=SELECT :b1Var2 == 'abc' FROM default.dual LIMIT 1
+
+IF TRANSLATED QUERY=SELECT 'abc' == 'abc' FROM default.dual LIMIT 1
+
+--------------------------------------------------------------------------------
+
+
+....................................
+
+IF:BLOCK[0]IF[1]IF[1] RESULT=true
+
+....................................
+
+
+--------------------------------------------------------
+Executing QUERY[0] IN BLOCK[0]IF[1]IF[1]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+ORIGINAL QUERY=insert into default.dummy values (:b1Var1)
+
+
+TRANSLATED QUERY=insert into default.dummy values (3)
+
+
+--------------------------------------------------------------------------------
+
+0 rows updated
+
+--------------------------------------------------------
+Executing QUERY[2] IN BLOCK[0]IF[1]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+ORIGINAL QUERY=select 'post' from default.dual limit 1
+
+
+TRANSLATED QUERY=select 'post' from default.dual limit 1
+
+
+--------------------------------------------------------------------------------
+
+0 rows updated
+
+--------------------------------------------------------
+Executing Export[2] IN BLOCK[0]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+EXPORT ORIGINAL QUERY=select :b1Var1+1 addVal from default.dual limit 1
+
+EXPORT TRANSLATED QUERY=select 3+1 addVal from default.dual limit 1
+
+
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------
+Executing QUERY[3] IN BLOCK[0]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+ORIGINAL QUERY=insert into default.dummy values (:addVal)
+
+
+TRANSLATED QUERY=insert into default.dummy values (4)
+
+
+--------------------------------------------------------------------------------
+
+0 rows updated

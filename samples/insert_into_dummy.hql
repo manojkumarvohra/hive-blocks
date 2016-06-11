@@ -1,0 +1,1 @@
+insert into default.dummy values (:b1Var1);

@@ -1,0 +1,1 @@
+select 'post' from default.dual limit 1;

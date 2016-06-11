@@ -1,0 +1,1 @@
+select :b1Var1+1 addVal from default.dual limit 1

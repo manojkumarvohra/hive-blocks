@@ -1,0 +1,1 @@
+select 3 b1Var1, 'abc' b1Var2 from default.dual limit 1
