@@ -25,6 +25,7 @@ You can provide it a xml in below construct:
 ```
 
 Note: The supporting files for above block configuration can be found in sample folder in project.
+(Execution log can be seen in sample folder)
 
 - Here the execution can be subdivided into blocks where each block signify a pl/sql block with multiple IFs, Queries or nesting of that with in each other.
 - The execution order of blocks is determined by 'block-id' of each sub block element.
