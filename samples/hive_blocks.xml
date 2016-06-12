@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blocks name="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/">
-  <block block-id="0">
+  <block name="first-block">
     <variable name="b1Var1" type="int"/>
     <variable name="b1Var2" type="string"/>
     <variable name="addVal" type="int"/>
-    <export execution-order="0" query-file="export_vars.hql"/>
-    <if execution-order="1" condition=":b1Var1 > 2">
-      <query execution-order="0" query-file="pre_if.hql" />
-      <if execution-order="1" condition=":b1Var2 == 'abc'">
-      	<query execution-order="0" query-file="insert_into_dummy.hql" />
+    <export name="export_both_vars" query-file="export_vars.hql"/>
+    <if name="if_gt_2" condition=":b1Var1 > 2">
+      <query name="pre_sub_if" query-file="pre_if.hql" />
+      <if name="sub_if" condition=":b1Var2 == 'abc'">
+      	<query name="insert_dummy" query-file="insert_into_dummy.hql" />
       </if>
-      <query execution-order="2" query-file="post_if.hql" />
+      <query name="post_if" query-file="post_if.hql" />
     </if>
-    <export execution-order="2" query-file="add_to_vars.hql"/>
-    <query execution-order="3" query-file="insert_into_dummy_plus.hql" />
+    <export name="add vars and prepare new" query-file="add_to_vars.hql"/>
+    <query name="last insert" query-file="insert_into_dummy_plus.hql" />
   </block>
 </blocks>

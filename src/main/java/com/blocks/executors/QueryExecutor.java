@@ -14,14 +14,14 @@ public class QueryExecutor {
 	public void execute(Query query, Block parentBlock, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing QUERY[" + query.getExecutionOrder() + "] IN " + immediateParentId + "\n");
+		System.out.println("Executing QUERY[" + query.getName() + "] IN " + immediateParentId + "\n");
 		System.out.println("--------------------------------------------------------\n");
 
 		String queryFile = query.getQueryFile();
 
 		if (queryFile == null || queryFile.isEmpty()) {
 			throw new RuntimeException("Error: Null or Empty query file name specified for " + immediateParentId
-					+ "QUERY[" + query.getExecutionOrder() + "]\n");
+					+ "QUERY[" + query.getName() + "]\n");
 		}
 
 		dbQueryExecutor = new DBQueryExecutor();

@@ -1,19 +1,17 @@
 package com.blocks.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.LinkedList;
 
 public class Blocks {
 
 	String name;
 	String basePath;
-	List<Block> blocks	= new ArrayList<Block>();
-	
+	LinkedList<Block> blocks = new LinkedList<Block>();
+
 	public void addBlocks(Block block) {
 		blocks.add(block);
-	}	
-	
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -30,15 +28,7 @@ public class Blocks {
 		this.basePath = basePath;
 	}
 
-	public List<BlockExecutionOrderComparable> getSortedElements(){
-		
-		List<BlockExecutionOrderComparable> elements = new ArrayList<BlockExecutionOrderComparable>();
-		
-		elements.addAll(blocks != null ? blocks : new ArrayList<BlockExecutionOrderComparable>());
-	
-		Collections.sort(elements);
-		
-		return elements;
-		
+	public LinkedList<Block> getBlocks() {
+		return blocks;
 	}
 }

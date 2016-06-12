@@ -3,20 +3,20 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
 <blocks name="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/">
-  <block block-id="0">
+  <block name="first-block">
     <variable name="b1Var1" type="int"/>
     <variable name="b1Var2" type="string"/>
     <variable name="addVal" type="int"/>
-    <export execution-order="0" query-file="export_vars.hql"/>
-    <export execution-order="2" query-file="add_to_vars.hql"/>
-    <if execution-order="1" condition=":b1Var1 &gt; 2">
-      <if execution-order="1" condition=":b1Var2 == 'abc'">
-        <query execution-order="0" query-file="insert_into_dummy.hql"/>
+    <export name="export_both_vars" query-file="export_vars.hql"/>
+    <if name="if_gt_2" condition=":b1Var1 &gt; 2">
+      <query name="pre_sub_if" query-file="pre_if.hql"/>
+      <if name="sub_if" condition=":b1Var2 == 'abc'">
+        <query name="insert_dummy" query-file="insert_into_dummy.hql"/>
       </if>
-      <query execution-order="0" query-file="pre_if.hql"/>
-      <query execution-order="2" query-file="post_if.hql"/>
+      <query name="post_if" query-file="post_if.hql"/>
     </if>
-    <query execution-order="3" query-file="insert_into_dummy_plus.hql"/>
+    <export name="add vars and prepare new" query-file="add_to_vars.hql"/>
+    <query name="last insert" query-file="insert_into_dummy_plus.hql"/>
   </block>
 </blocks>
 
@@ -26,13 +26,13 @@
 Starting execution of blocks:hive-blocks
 
 --------------------------------------------------------
-Executing Block[0]
+Executing Block[first-block]
 
 --------------------------------------------------------
 
 
 --------------------------------------------------------
-Executing Export[0] IN BLOCK[0]
+Executing Export[export_both_vars] IN BLOCK[first-block]
 
 --------------------------------------------------------
 
@@ -51,7 +51,7 @@ log4j:WARN Please initialize the log4j system properly.
 log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
 
 --------------------------------------------------------
-Executing IF[1] IN BLOCK[0]
+Executing IF[if_gt_2] IN BLOCK[first-block]
 
 --------------------------------------------------------
 
@@ -67,13 +67,13 @@ IF TRANSLATED QUERY=SELECT 3 > 2 FROM default.dual LIMIT 1
 
 ....................................
 
-IF:BLOCK[0]IF[1] RESULT=true
+IF:BLOCK[first-block]IF[if_gt_2] RESULT=true
 
 ....................................
 
 
 --------------------------------------------------------
-Executing QUERY[0] IN BLOCK[0]IF[1]
+Executing QUERY[pre_sub_if] IN BLOCK[first-block]IF[if_gt_2]
 
 --------------------------------------------------------
 
@@ -91,7 +91,7 @@ TRANSLATED QUERY=select 'pre' from default.dual limit 1
 0 rows updated
 
 --------------------------------------------------------
-Executing IF[1] IN BLOCK[0]IF[1]
+Executing IF[sub_if] IN BLOCK[first-block]IF[if_gt_2]
 
 --------------------------------------------------------
 
@@ -107,13 +107,13 @@ IF TRANSLATED QUERY=SELECT 'abc' == 'abc' FROM default.dual LIMIT 1
 
 ....................................
 
-IF:BLOCK[0]IF[1]IF[1] RESULT=true
+IF:BLOCK[first-block]IF[if_gt_2]IF[sub_if] RESULT=true
 
 ....................................
 
 
 --------------------------------------------------------
-Executing QUERY[0] IN BLOCK[0]IF[1]IF[1]
+Executing QUERY[insert_dummy] IN BLOCK[first-block]IF[if_gt_2]IF[sub_if]
 
 --------------------------------------------------------
 
@@ -131,7 +131,7 @@ TRANSLATED QUERY=insert into default.dummy values (3)
 0 rows updated
 
 --------------------------------------------------------
-Executing QUERY[2] IN BLOCK[0]IF[1]
+Executing QUERY[post_if] IN BLOCK[first-block]IF[if_gt_2]
 
 --------------------------------------------------------
 
@@ -149,7 +149,7 @@ TRANSLATED QUERY=select 'post' from default.dual limit 1
 0 rows updated
 
 --------------------------------------------------------
-Executing Export[2] IN BLOCK[0]
+Executing Export[add vars and prepare new] IN BLOCK[first-block]
 
 --------------------------------------------------------
 
@@ -165,7 +165,7 @@ EXPORT TRANSLATED QUERY=select 3+1 addVal from default.dual limit 1
 
 
 --------------------------------------------------------
-Executing QUERY[3] IN BLOCK[0]
+Executing QUERY[last insert] IN BLOCK[first-block]
 
 --------------------------------------------------------
 

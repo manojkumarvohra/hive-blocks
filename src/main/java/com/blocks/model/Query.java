@@ -1,9 +1,17 @@
 package com.blocks.model;
 
-public class Query implements ElementExecutionOrderComparable{
+public class Query implements Element{
 	
-	int executionOrder;
 	String queryFile;
+	String name;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public String getQueryFile() {
 		return queryFile;
@@ -11,28 +19,5 @@ public class Query implements ElementExecutionOrderComparable{
 
 	public void setQueryFile(String queryFile) {
 		this.queryFile = queryFile;
-	}
-	
-	public int getExecutionOrder() {
-		return executionOrder;
-	}
-
-	public void setExecutionOrder(int order) {
-		this.executionOrder = order;
-	}
-
-	public int getElementExecutionOrder() {
-		return executionOrder;
-	}
-
-	public int compareTo(ElementExecutionOrderComparable o) {
-		int comparisonResult = this.getElementExecutionOrder() - o.getElementExecutionOrder();
-		
-		if(comparisonResult == 0){
-			throw new RuntimeException(
-					"INVALID BLOCK CONFIGURATION: Two Queries can't have same execution order within same parent");
-		}
-		
-		return comparisonResult;
 	}
 }

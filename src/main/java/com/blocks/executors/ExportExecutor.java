@@ -14,17 +14,17 @@ public class ExportExecutor {
 	public void execute(Export export, Block parentBlock, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing Export[" + export.getExecutionOrder() + "] IN " + immediateParentId + "\n");
+		System.out.println("Executing Export[" + export.getName() + "] IN " + immediateParentId + "\n");
 		System.out.println("--------------------------------------------------------\n");
 
 		String queryFile = export.getQueryFile();
 
 		if (queryFile == null || queryFile.isEmpty()) {
 			throw new RuntimeException("Error: Null or Empty query file name specified for " + immediateParentId
-					+ "Export[" + export.getExecutionOrder() + "]\n");
+					+ "Export[" + export.getName() + "]\n");
 		}
 
-		immediateParentId = immediateParentId + "EXPORT[" + export.getElementExecutionOrder() + "]";
+		immediateParentId = immediateParentId + "EXPORT[" + export.getName() + "]";
 
 		dbQueryExecutor = new DBQueryExecutor();
 
