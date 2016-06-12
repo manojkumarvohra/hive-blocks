@@ -46,7 +46,7 @@ Note: The supporting files for above block configuration can be found in sample 
 - With in elements the execution order of nested elements (at same level) is determined by order they appear.
 - A \<block\> signify a piece of confined executible. It can contain:
   -  \<variable\>
-  -  \<export\>
+  -  \<export\> (export would assign values to variable defined in BLOCK)
   -  \<if\>
   -  \<for\>
   -  \<query\>
@@ -60,14 +60,14 @@ Note: The supporting files for above block configuration can be found in sample 
 - A \<export\> signify a query whose result set is assigned to variables.
 - A \<if\> block signify a conditional block whose execution depends on its condition. It can contain:
  -    \<variable\>
-  -   \<export\> (export would assign values to variable defined in IF block)
+  -   \<export\> (export would assign values to variable defined in IF)
   -   \<if\>
   -   \<query\>
   -   \<for\>
   -   \<print\>
 - A \<for\> block signify a for loop whose execution depends on the rows returned by executing query in queryfile. It can contain:
   -   \<variable\>
-  -   \<export\> (export would assign values to variable defined in FOR block)
+  -   \<export\> (export would assign values to variable defined in FOR)
   -   \<if\>
   -   \<query\>
   -   \<for\>
