@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import com.blocks.model.Parent;
+
 public class DBQueryExecutor {
 
 	private static Logger logger = Logger.getLogger(DBQueryExecutor.class);
@@ -26,14 +28,14 @@ public class DBQueryExecutor {
 	private static final String QUERY_EXECUTION_ERROR_MESSAGE_PATERN = "Error while executing query on database... \n\t %s \n";
 	private static final String CONNECTION_FAILURE_MESSAGE_PATTERN = "Unable to establish connection to database... %s \n";
 
-	public boolean checkIfCondition(String condition, Map<String, Object> variableMap,
-			Map<String, String> variableTypeMap, String immediateParentId, DBConfiguration dbConfiguration) {
+	public boolean checkIfCondition(String condition, Parent parent, String immediateParentId,
+			DBConfiguration dbConfiguration) {
 
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
 		String conditionQuery = "SELECT " + condition + " FROM default.dual LIMIT 1";
-		String translatedQuery = substituteVariables(variableMap, variableTypeMap, immediateParentId, conditionQuery);
+		String translatedQuery = substituteVariables(parent, immediateParentId, conditionQuery);
 
 		System.out.println("\n--------------------------------------------------------------------------------\n");
 		System.out.println("IF ORIGINAL QUERY=" + conditionQuery);
@@ -66,51 +68,64 @@ public class DBQueryExecutor {
 		return retValue;
 	}
 
-	private String substituteVariables(Map<String, Object> variableMap, Map<String, String> variableTypeMap,
-			String immediateParentId, String conditionQuery) {
+	public String substituteVariables(Parent parent, String immediateParentId, String conditionQuery) {
 
 		String translatedQuery = conditionQuery;
 
-		for (String key : variableMap.keySet()) {
+		while (parent != null) {
 
-			String matchingKey = ":" + key;
+			Map<String, Object> variableExportedValuesMap = parent.getVariableExportedValuesMap();
+			Map<String, Object> variableAssignedValuesMap = parent.getVariableAssignedValuesMap();
+			Map<String, String> variableTypeMap = parent.getVariableTypeMap();
 
-			if (conditionQuery.contains(matchingKey)) {
+			for (String key : variableExportedValuesMap.keySet()) {
 
-				Object valueObj = variableMap.get(key);
+				String matchingKey = ":" + key;
 
-				if (valueObj == null) {
-					throw new RuntimeException("INVALID BLOCK CONFIGURATION: Variable[" + matchingKey
-							+ "]required to be substituted in: " + immediateParentId + " is not exported.");
+				if (translatedQuery.contains(matchingKey)) {
+
+					Object valueObj = variableExportedValuesMap.get(key);
+
+					if (valueObj == null) {
+
+						valueObj = variableAssignedValuesMap.get(key);
+
+						if (valueObj == null) {
+							continue;
+						}
+					}
+
+					String valueToBeReplaced = valueObj.toString();
+					String varType = variableTypeMap.get(key);
+
+					if (varType.equalsIgnoreCase("string") || varType.equalsIgnoreCase("varchar")
+							|| varType.equalsIgnoreCase("char") || varType.equalsIgnoreCase("date")
+							|| varType.equalsIgnoreCase("timestamp")) {
+
+						valueToBeReplaced = "'" + valueToBeReplaced + "'";
+					}
+
+					Pattern variableReplacementPattern = Pattern.compile(matchingKey);
+
+					StringBuffer stringBuffer = new StringBuffer();
+					Matcher variablePatterMatcher = variableReplacementPattern.matcher(translatedQuery);
+
+					while (variablePatterMatcher.find()) {
+						variablePatterMatcher.appendReplacement(stringBuffer, valueToBeReplaced);
+					}
+					variablePatterMatcher.appendTail(stringBuffer);
+					translatedQuery = stringBuffer.toString();
 				}
-
-				String valueToBeReplaced = valueObj.toString();
-				String varType = variableTypeMap.get(key);
-
-				if (varType.equalsIgnoreCase("string") || varType.equalsIgnoreCase("varchar")
-						|| varType.equalsIgnoreCase("char") || varType.equalsIgnoreCase("date")
-						|| varType.equalsIgnoreCase("timestamp")) {
-
-					valueToBeReplaced = "'" + valueToBeReplaced + "'";
-				}
-
-				Pattern variableReplacementPattern = Pattern.compile(matchingKey);
-
-				StringBuffer stringBuffer = new StringBuffer();
-				Matcher variablePatterMatcher = variableReplacementPattern.matcher(conditionQuery);
-
-				while (variablePatterMatcher.find()) {
-					variablePatterMatcher.appendReplacement(stringBuffer, valueToBeReplaced);
-				}
-				variablePatterMatcher.appendTail(stringBuffer);
-				translatedQuery = stringBuffer.toString();
 			}
+
+			parent = parent.getImmediateParent();
 		}
+
 		return translatedQuery;
 	}
 
-	public void exportValuesToVariables(String queryFilePath, Map<String, Object> variableMap,
-			Map<String, String> variableTypeMap, String immediateParentId, DBConfiguration dbConfiguration) {
+	public void exportValuesToVariables(String queryFilePath, Parent parent, String immediateParentId,
+			DBConfiguration dbConfiguration) {
 
 		Connection connection = null;
 		Statement statement = null;
@@ -120,7 +135,7 @@ public class DBQueryExecutor {
 		try {
 
 			exportQuery = getQueryFromQueryFile(queryFilePath, immediateParentId);
-			String translatedQuery = substituteVariables(variableMap, variableTypeMap, immediateParentId, exportQuery);
+			String translatedQuery = substituteVariables(parent, immediateParentId, exportQuery);
 
 			System.out.println("\n--------------------------------------------------------------------------------\n");
 			System.out.println("EXPORT ORIGINAL QUERY=" + exportQuery);
@@ -130,25 +145,7 @@ public class DBQueryExecutor {
 			resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 1);
 
 			if (resultSet.next()) {
-				ResultSetMetaData metadata = resultSet.getMetaData();
-				int columnCount = metadata.getColumnCount();
-				for (int i = 1; i <= columnCount; i++) {
-
-					String varname = metadata.getColumnLabel(i);
-					Object value = resultSet.getObject(i);
-
-					if (varname.contains(".")) {
-						varname = varname.split("\\.")[1];
-					}
-
-					for (String key : variableMap.keySet()) {
-						if (key.equalsIgnoreCase(varname)) {
-							variableMap.put(key, value);
-							break;
-						}
-					}
-
-				}
+				exportResultSetToVariables(resultSet, parent);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -172,8 +169,32 @@ public class DBQueryExecutor {
 
 	}
 
-	public void executeQuery(String queryFilePath, Map<String, Object> variableMap, Map<String, String> variableTypeMap,
-			String immediateParentId, DBConfiguration dbConfiguration) {
+	public void exportResultSetToVariables(ResultSet resultSet, Parent parent) throws SQLException {
+
+		ResultSetMetaData metadata = resultSet.getMetaData();
+		int columnCount = metadata.getColumnCount();
+		for (int i = 1; i <= columnCount; i++) {
+
+			String varname = metadata.getColumnLabel(i);
+			Object value = resultSet.getObject(i);
+
+			if (varname.contains(".")) {
+				varname = varname.split("\\.")[1];
+			}
+
+			Map<String, Object> variableExportedValuesMap = parent.getVariableExportedValuesMap();
+
+			for (String key : variableExportedValuesMap.keySet()) {
+				if (key.equalsIgnoreCase(varname)) {
+					variableExportedValuesMap.put(key, value);
+					break;
+				}
+			}
+		}
+	}
+
+	public void executeQuery(String queryFilePath, Parent parent, String immediateParentId,
+			DBConfiguration dbConfiguration) {
 		Connection connection = null;
 		Statement statement = null;
 		String query = null;
@@ -181,7 +202,7 @@ public class DBQueryExecutor {
 		try {
 
 			query = getQueryFromQueryFile(queryFilePath, immediateParentId);
-			String translatedQuery = substituteVariables(variableMap, variableTypeMap, immediateParentId, query);
+			String translatedQuery = substituteVariables(parent, immediateParentId, query);
 
 			System.out.println("\n--------------------------------------------------------------------------------\n");
 			System.out.println("ORIGINAL QUERY=" + query + "\n");
@@ -209,6 +230,39 @@ public class DBQueryExecutor {
 			cleanUpConnection(connection, statement, null);
 		}
 
+	}
+
+	public ResultSet executeQueryAndFetchResults(String queryFilePath, Parent parent, String immediateParentId,
+			DBConfiguration dbConfiguration, Connection connection, Statement statement, ResultSet resultSet) {
+
+		try {
+
+			String query = getQueryFromQueryFile(queryFilePath, immediateParentId);
+			String translatedQuery = substituteVariables(parent, immediateParentId, query);
+
+			System.out.println("\n--------------------------------------------------------------------------------\n");
+			System.out.println("ORIGINAL QUERY=" + query + "\n");
+			System.out.println("\nTRANSLATED QUERY=" + translatedQuery + "\n");
+			System.out.println("\n--------------------------------------------------------------------------------\n");
+
+			resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 100);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("ERROR EXECUTING QUERY: " + immediateParentId);
+			logger.error("ERROR EXECUTING QUERY: " + immediateParentId);
+			System.exit(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("ERROR EXECUTING QUERY: " + immediateParentId);
+			logger.error("ERROR EXECUTING QUERY: " + immediateParentId);
+			System.exit(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("ERROR EXECUTING QUERY: " + immediateParentId);
+			logger.error("ERROR EXECUTING QUERY: " + immediateParentId);
+			System.exit(1);
+		}
+		return resultSet;
 	}
 
 	private String getQueryFromQueryFile(String queryFilePath, String immediateParentId) throws IOException {
@@ -313,7 +367,7 @@ public class DBQueryExecutor {
 		return resultSet;
 	}
 
-	private void cleanUpConnection(Connection connection, Statement statement, ResultSet resultSet) {
+	public void cleanUpConnection(Connection connection, Statement statement, ResultSet resultSet) {
 
 		if (resultSet != null) {
 			try {

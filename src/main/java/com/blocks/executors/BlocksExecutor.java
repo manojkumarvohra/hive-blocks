@@ -12,11 +12,10 @@ public class BlocksExecutor {
 			return;
 		}
 		
-		System.out.println("Starting execution of blocks:" + blocks.getName());
+		System.out.println("Starting execution of blocks:" + blocks.getId());
 		
 		for (Block block : blocks.getBlocks()) {
-			block.setBasePath(blocks.getBasePath());
-			new BlockExecutor().execute(block, dbConfiguration);
+			new BlockExecutor().execute(block, blocks.getBasePath(), dbConfiguration);
 		}
 	}
 }

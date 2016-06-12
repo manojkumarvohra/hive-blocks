@@ -26,8 +26,9 @@ import com.blocks.executors.BlocksExecutor;
 import com.blocks.model.Block;
 import com.blocks.model.Blocks;
 import com.blocks.model.Export;
+import com.blocks.model.For;
 import com.blocks.model.If;
-import com.blocks.model.Loop;
+import com.blocks.model.Print;
 import com.blocks.model.Query;
 import com.blocks.model.Variable;
 import com.thoughtworks.xstream.XStream;
@@ -118,42 +119,65 @@ public class HBlockExecutor {
 		xstream.alias("blocks", Blocks.class);
 		xstream.alias("block", Block.class);
 		xstream.alias("export", Export.class);
+		xstream.alias("for", For.class);
+		xstream.alias("print", Print.class);
 		xstream.alias("variable", Variable.class);
 		xstream.alias("if", If.class);
-		xstream.alias("loop", Loop.class);
 		xstream.alias("query", Query.class);
 
 		// set implicit collections
 		xstream.addImplicitCollection(Blocks.class, "blocks", "block", Block.class);
+		
 		xstream.addImplicitCollection(Block.class, "variables", "variable", Variable.class);
 		xstream.addImplicitCollection(Block.class, "elements", "export", Export.class);
 		xstream.addImplicitCollection(Block.class, "elements", "if", If.class);
 		xstream.addImplicitCollection(Block.class, "elements", "query", Query.class);
+		xstream.addImplicitCollection(Block.class, "elements", "print", Print.class);
+		xstream.addImplicitCollection(Block.class, "elements", "for", For.class);
 		
+		xstream.addImplicitCollection(If.class, "variables", "variable", Variable.class);
 		xstream.addImplicitCollection(If.class, "elements", "export", Export.class);
 		xstream.addImplicitCollection(If.class, "elements", "if", If.class);
 		xstream.addImplicitCollection(If.class, "elements", "query", Query.class);
+		xstream.addImplicitCollection(If.class, "elements", "print", Print.class);
+		xstream.addImplicitCollection(If.class, "elements", "for", For.class);
+		
+		xstream.addImplicitCollection(For.class, "variables", "variable", Variable.class);
+		xstream.addImplicitCollection(For.class, "elements", "export", Export.class);
+		xstream.addImplicitCollection(For.class, "elements", "if", If.class);
+		xstream.addImplicitCollection(For.class, "elements", "query", Query.class);
+		xstream.addImplicitCollection(For.class, "elements", "print", Print.class);
+		xstream.addImplicitCollection(For.class, "elements", "for", For.class);
 		
 		// set attributes
-		xstream.useAttributeFor(Blocks.class, "name");
+		xstream.useAttributeFor(Blocks.class, "id");
 		xstream.useAttributeFor(Blocks.class, "basePath");
 		xstream.aliasField("base-path", Blocks.class, "basePath");
-		xstream.useAttributeFor(Block.class, "name");
 		
-		xstream.useAttributeFor(Export.class, "name");
+		xstream.useAttributeFor(Block.class, "id");
+		
+		xstream.useAttributeFor(Export.class, "id");
 		xstream.useAttributeFor(Export.class, "queryFile");
 		xstream.aliasField("query-file", Export.class, "queryFile");
 		
-		xstream.useAttributeFor(If.class, "name");
+		xstream.useAttributeFor(If.class, "id");
 		xstream.useAttributeFor(If.class, "condition");
 		
-		xstream.useAttributeFor(Query.class, "name");
+		xstream.useAttributeFor(Query.class, "id");
 		xstream.useAttributeFor(Query.class, "queryFile");
 		xstream.aliasField("query-file", Query.class, "queryFile");
 		
 		xstream.useAttributeFor(Variable.class, "name");
 		xstream.useAttributeFor(Variable.class, "type");
-
+		xstream.useAttributeFor(Variable.class, "value");
+		
+		xstream.useAttributeFor(For.class, "id");
+		xstream.useAttributeFor(For.class, "condition");
+		xstream.useAttributeFor(For.class, "queryFile");
+		xstream.aliasField("query-file", For.class, "queryFile");
+		
+		xstream.useAttributeFor(Print.class, "text");
+		
 		xstream.setMode(XStream.NO_REFERENCES);
 	}
 

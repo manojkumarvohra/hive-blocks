@@ -1,42 +1,38 @@
 package com.blocks.executors;
 
-import java.util.Map;
-
 import com.blocks.dao.DBConfiguration;
 import com.blocks.dao.DBQueryExecutor;
-import com.blocks.model.Block;
 import com.blocks.model.Export;
+import com.blocks.model.Parent;
 
 public class ExportExecutor {
 
 	private DBQueryExecutor dbQueryExecutor = null;
 
-	public void execute(Export export, Block parentBlock, String immediateParentId, DBConfiguration dbConfiguration) {
+	public void execute(Export export, String basePath, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing Export[" + export.getName() + "] IN " + immediateParentId + "\n");
+		System.out.println("Executing Export[" + export.getId() + "] IN " + immediateParentId + "\n");
 		System.out.println("--------------------------------------------------------\n");
 
 		String queryFile = export.getQueryFile();
 
 		if (queryFile == null || queryFile.isEmpty()) {
 			throw new RuntimeException("Error: Null or Empty query file name specified for " + immediateParentId
-					+ "Export[" + export.getName() + "]\n");
+					+ "Export[" + export.getId() + "]\n");
 		}
 
-		immediateParentId = immediateParentId + "EXPORT[" + export.getName() + "]";
+		immediateParentId = immediateParentId + "EXPORT[" + export.getId() + "]";
 
 		dbQueryExecutor = new DBQueryExecutor();
 
-		String queryFilePath = parentBlock.getBasePath() + queryFile;
+		String queryFilePath = basePath + queryFile;
 
-		exportValuesToVariables(queryFilePath, parentBlock.getVariableMap(), parentBlock.getVariableTypeMap(),
-				immediateParentId, dbConfiguration);
+		exportValuesToVariables(queryFilePath, export.getParent(), immediateParentId, dbConfiguration);
 	}
 
-	private void exportValuesToVariables(String queryFilePath, Map<String, Object> variableMap,
-			Map<String, String> variableTypeMap, String immediateParentId, DBConfiguration dbConfiguration) {
-		dbQueryExecutor.exportValuesToVariables(queryFilePath, variableMap, variableTypeMap, immediateParentId,
-				dbConfiguration);
+	private void exportValuesToVariables(String queryFilePath, Parent parent, String immediateParentId,
+			DBConfiguration dbConfiguration) {
+		dbQueryExecutor.exportValuesToVariables(queryFilePath, parent, immediateParentId, dbConfiguration);
 	}
 }

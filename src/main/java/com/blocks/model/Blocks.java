@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class Blocks {
 
-	String name;
+	String id;
 	String basePath;
 	LinkedList<Block> blocks = new LinkedList<Block>();
 
@@ -12,12 +12,12 @@ public class Blocks {
 		blocks.add(block);
 	}
 
-	public String getName() {
-		return name;
+	public String getId() {
+		return id;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getBasePath() {
