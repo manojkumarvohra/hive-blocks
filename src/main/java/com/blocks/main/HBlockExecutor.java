@@ -25,6 +25,8 @@ import com.blocks.dao.DBConfiguration;
 import com.blocks.executors.BlocksExecutor;
 import com.blocks.model.Block;
 import com.blocks.model.Blocks;
+import com.blocks.model.Else;
+import com.blocks.model.ElseIf;
 import com.blocks.model.Export;
 import com.blocks.model.For;
 import com.blocks.model.If;
@@ -130,6 +132,8 @@ public class HBlockExecutor {
 		xstream.alias("print", Print.class);
 		xstream.alias("variable", Variable.class);
 		xstream.alias("if", If.class);
+		xstream.alias("elseif", ElseIf.class);
+		xstream.alias("else", Else.class);
 		xstream.alias("query", Query.class);
 
 		// set implicit collections
@@ -138,6 +142,8 @@ public class HBlockExecutor {
 		xstream.addImplicitCollection(Block.class, "variables", "variable", Variable.class);
 		xstream.addImplicitCollection(Block.class, "elements", "export", Export.class);
 		xstream.addImplicitCollection(Block.class, "elements", "if", If.class);
+		xstream.addImplicitCollection(Block.class, "elements", "elseif", ElseIf.class);
+		xstream.addImplicitCollection(Block.class, "elements", "else", Else.class);
 		xstream.addImplicitCollection(Block.class, "elements", "query", Query.class);
 		xstream.addImplicitCollection(Block.class, "elements", "print", Print.class);
 		xstream.addImplicitCollection(Block.class, "elements", "for", For.class);
@@ -145,13 +151,38 @@ public class HBlockExecutor {
 		xstream.addImplicitCollection(If.class, "variables", "variable", Variable.class);
 		xstream.addImplicitCollection(If.class, "elements", "export", Export.class);
 		xstream.addImplicitCollection(If.class, "elements", "if", If.class);
+		xstream.addImplicitCollection(If.class, "elements", "elseif", ElseIf.class);
+		xstream.addImplicitCollection(If.class, "elements", "else", Else.class);
 		xstream.addImplicitCollection(If.class, "elements", "query", Query.class);
 		xstream.addImplicitCollection(If.class, "elements", "print", Print.class);
 		xstream.addImplicitCollection(If.class, "elements", "for", For.class);
 
+<<<<<<< HEAD
+		xstream.addImplicitCollection(ElseIf.class, "variables", "variable", Variable.class);
+		xstream.addImplicitCollection(ElseIf.class, "elements", "export", Export.class);
+		xstream.addImplicitCollection(ElseIf.class, "elements", "if", If.class);
+		xstream.addImplicitCollection(ElseIf.class, "elements", "elseif", ElseIf.class);
+		xstream.addImplicitCollection(ElseIf.class, "elements", "else", Else.class);
+		xstream.addImplicitCollection(ElseIf.class, "elements", "query", Query.class);
+		xstream.addImplicitCollection(ElseIf.class, "elements", "print", Print.class);
+		xstream.addImplicitCollection(ElseIf.class, "elements", "for", For.class);
+
+		xstream.addImplicitCollection(Else.class, "variables", "variable", Variable.class);
+		xstream.addImplicitCollection(Else.class, "elements", "export", Export.class);
+		xstream.addImplicitCollection(Else.class, "elements", "if", If.class);
+		xstream.addImplicitCollection(Else.class, "elements", "elseif", ElseIf.class);
+		xstream.addImplicitCollection(Else.class, "elements", "else", Else.class);
+		xstream.addImplicitCollection(Else.class, "elements", "query", Query.class);
+		xstream.addImplicitCollection(Else.class, "elements", "print", Print.class);
+		xstream.addImplicitCollection(Else.class, "elements", "for", For.class);
+
+=======
+>>>>>>> 0cec3dbf1f75d8b5547257da2ace9ba1e088a446
 		xstream.addImplicitCollection(For.class, "variables", "variable", Variable.class);
 		xstream.addImplicitCollection(For.class, "elements", "export", Export.class);
 		xstream.addImplicitCollection(For.class, "elements", "if", If.class);
+		xstream.addImplicitCollection(For.class, "elements", "elseif", ElseIf.class);
+		xstream.addImplicitCollection(For.class, "elements", "else", Else.class);
 		xstream.addImplicitCollection(For.class, "elements", "query", Query.class);
 		xstream.addImplicitCollection(For.class, "elements", "print", Print.class);
 		xstream.addImplicitCollection(For.class, "elements", "for", For.class);
@@ -170,6 +201,14 @@ public class HBlockExecutor {
 		xstream.useAttributeFor(If.class, "id");
 		xstream.useAttributeFor(If.class, "condition");
 
+<<<<<<< HEAD
+		xstream.useAttributeFor(ElseIf.class, "id");
+		xstream.useAttributeFor(ElseIf.class, "condition");
+
+		xstream.useAttributeFor(Else.class, "id");
+
+=======
+>>>>>>> 0cec3dbf1f75d8b5547257da2ace9ba1e088a446
 		xstream.useAttributeFor(Query.class, "id");
 		xstream.useAttributeFor(Query.class, "queryFile");
 		xstream.aliasField("query-file", Query.class, "queryFile");

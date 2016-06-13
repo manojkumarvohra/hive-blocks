@@ -2,26 +2,57 @@ C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-B
 
 --------------------------------Executing XML---------------------------------------------
 
-<?xml version="1.0" encoding="UTF-8"?><blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/">
+<?xml version="1.0" encoding="UTF-8"?>
+<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/">
   <block id="first-block">
+    <!-- GLOBAL BLOCK LEVEL VARIABLES-->
     <variable name="b1Var1" type="int"/>
     <variable name="b1Var2" type="string"/>
     <variable name="addVal" type="int"/>
+    <!-- SELECT QUERY RESULT VALUES INTO VARIABLES-->
     <export id="export_both_vars" query-file="export_vars.hql"/>
+    <!-- IF BLOCK-->
     <if id="if_gt_2" condition=":b1Var1 &gt; 2 AND :b1Var2 == 'abc'">
+      <!-- IF BLOCK LEVEL VARIABLES-->
       <variable name="b1Var2" type="string" value="overriden-b1Var2"/>
+      <!-- QUERY TO BE EXECUTED, VARIABLES SUBSTITUTED IF ANY FOUND IN QUERY-->
       <query id="pre_sub_if" query-file="pre_if.hql"/>
+      <!-- NESTED IF ELSE BLOCK-->
       <if id="sub_if" condition=":b1Var2 == 'overriden-b1Var2'">
         <query id="insert_dummy" query-file="insert_into_dummy.hql"/>
       </if>
+      <else id="sub_else">
+        <print text="sub_if not executed"/>
+      </else>
       <query id="post_if" query-file="post_if.hql"/>
+      <!-- FOR EACH RECORD FETCHED FROM QUERY, ITERATE AND EXECUTE SUB ELEMENTS-->
       <for id="for each dummy value" query-file="iterate_dummy.hql">
-        <variable name="dummyfield" type="string"/>
+        <variable name="dummyfield" type="int"/>
         <print text="Got Dummy Value=:dummyfield"/>
       </for>
     </if>
     <export id="add vars and prepare new" query-file="add_to_vars.hql"/>
     <query id="last insert" query-file="insert_into_dummy_plus.hql"/>
+    <!-- IF ELSEIF .... ELSE BLOCK: TESTING ELSEIF EXECUTION-->
+    <if id="nano_if" condition=":addVal != 4">
+      <print text="added value is not 4"/>
+    </if>
+    <elseif id="nano_else_if" condition=":addVal == 4">
+      <print text="added value is 4"/>
+    </elseif>
+    <else id="else">
+      <print text="sorry its something else then"/>
+    </else>
+    <!-- IF ELSEIF .... ELSE BLOCK: TESTING ELSE EXECUTION-->
+    <if id="nano_if" condition=":addVal == 5">
+      <print text="added value is not 5"/>
+    </if>
+    <elseif id="nano_else_if" condition=":addVal == 6">
+      <print text="added value is 6"/>
+    </elseif>
+    <else id="else">
+      <print text="sorry its something else then"/>
+    </else>
   </block>
 </blocks>
 
@@ -169,9 +200,9 @@ TRANSLATED QUERY=select dummyfield from default.dummy limit 3
 
 --------------------------------------------------------------------------------
 
-Got Dummy Value='3'
-Got Dummy Value='4'
-Got Dummy Value='3'
+Got Dummy Value=3
+Got Dummy Value=4
+Got Dummy Value=3
 
 --------------------------------------------------------
 Executing Export[add vars and prepare new] IN BLOCK[first-block]
@@ -206,3 +237,99 @@ TRANSLATED QUERY=insert into default.dummy values (4)
 --------------------------------------------------------------------------------
 
 0 rows updated
+
+--------------------------------------------------------
+Executing IF[nano_if] IN BLOCK[first-block]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+IF ORIGINAL QUERY=SELECT :addVal != 4 FROM default.dual LIMIT 1
+
+IF TRANSLATED QUERY=SELECT 4 != 4 FROM default.dual LIMIT 1
+
+--------------------------------------------------------------------------------
+
+
+....................................
+
+IF:BLOCK[first-block]IF[nano_if] RESULT=false
+
+....................................
+
+
+--------------------------------------------------------
+Executing ELSEIF[nano_else_if] IN BLOCK[first-block]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+ELSEIF ORIGINAL QUERY=SELECT :addVal == 4 FROM default.dual LIMIT 1
+
+ELSEIF TRANSLATED QUERY=SELECT 4 == 4 FROM default.dual LIMIT 1
+
+--------------------------------------------------------------------------------
+
+
+....................................
+
+ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if] RESULT=true
+
+....................................
+
+added value is 4
+
+--------------------------------------------------------
+Executing IF[nano_if] IN BLOCK[first-block]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+IF ORIGINAL QUERY=SELECT :addVal == 5 FROM default.dual LIMIT 1
+
+IF TRANSLATED QUERY=SELECT 4 == 5 FROM default.dual LIMIT 1
+
+--------------------------------------------------------------------------------
+
+
+....................................
+
+IF:BLOCK[first-block]IF[nano_if] RESULT=false
+
+....................................
+
+
+--------------------------------------------------------
+Executing ELSEIF[nano_else_if] IN BLOCK[first-block]
+
+--------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+ELSEIF ORIGINAL QUERY=SELECT :addVal == 6 FROM default.dual LIMIT 1
+
+ELSEIF TRANSLATED QUERY=SELECT 4 == 6 FROM default.dual LIMIT 1
+
+--------------------------------------------------------------------------------
+
+
+....................................
+
+ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if] RESULT=false
+
+....................................
+
+
+--------------------------------------------------------
+Executing ELSE[else] IN BLOCK[first-block]
+
+--------------------------------------------------------
+
+sorry its something else then

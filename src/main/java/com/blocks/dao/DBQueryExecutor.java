@@ -28,7 +28,7 @@ public class DBQueryExecutor {
 	private static final String QUERY_EXECUTION_ERROR_MESSAGE_PATERN = "Error while executing query on database... \n\t %s \n";
 	private static final String CONNECTION_FAILURE_MESSAGE_PATTERN = "Unable to establish connection to database... %s \n";
 
-	public boolean checkIfCondition(String condition, Parent parent, String immediateParentId,
+	public boolean checkCondition(String element, String condition, Parent parent, String immediateParentId,
 			DBConfiguration dbConfiguration) {
 
 		Connection connection = null;
@@ -38,8 +38,8 @@ public class DBQueryExecutor {
 		String translatedQuery = substituteVariables(parent, immediateParentId, conditionQuery);
 
 		System.out.println("\n--------------------------------------------------------------------------------\n");
-		System.out.println("IF ORIGINAL QUERY=" + conditionQuery);
-		System.out.println("\nIF TRANSLATED QUERY=" + translatedQuery);
+		System.out.println(element + " ORIGINAL QUERY=" + conditionQuery);
+		System.out.println("\n" + element + " TRANSLATED QUERY=" + translatedQuery);
 		System.out.println("\n--------------------------------------------------------------------------------\n");
 
 		boolean retValue = false;
@@ -53,12 +53,12 @@ public class DBQueryExecutor {
 			}
 
 			System.out.println("\n....................................\n");
-			System.out.println("IF:" + immediateParentId + " RESULT=" + retValue);
+			System.out.println(element + ":" + immediateParentId + " RESULT=" + retValue);
 			System.out.println("\n....................................\n");
 
 		} catch (Throwable t) {
-			System.out.println("ERROR EXECUTING IF CONDITION: " + immediateParentId);
-			logger.error("ERROR EXECUTING IF CONDITION: " + immediateParentId);
+			System.out.println("ERROR EXECUTING " + element + "CONDITION: " + immediateParentId);
+			logger.error("ERROR EXECUTING " + element + " CONDITION: " + immediateParentId);
 			t.printStackTrace();
 			System.exit(1);
 		} finally {

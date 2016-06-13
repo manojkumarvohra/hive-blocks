@@ -2,30 +2,63 @@
 <blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/">
   <block id="first-block">
     
+    <!-- GLOBAL BLOCK LEVEL VARIABLES-->
     <variable name="b1Var1" type="int"/>
     <variable name="b1Var2" type="string"/>
     <variable name="addVal" type="int"/>
     
+    <!-- SELECT QUERY RESULT VALUES INTO VARIABLES-->
     <export id="export_both_vars" query-file="export_vars.hql"/>
     
+    <!-- IF BLOCK-->
     <if id="if_gt_2" condition=":b1Var1 > 2 AND :b1Var2 == 'abc'">
     
+        <!-- IF BLOCK LEVEL VARIABLES-->
         <variable name="b1Var2" type="string" value="overriden-b1Var2"/>
     
+        <!-- QUERY TO BE EXECUTED, VARIABLES SUBSTITUTED IF ANY FOUND IN QUERY-->
         <query id="pre_sub_if" query-file="pre_if.hql" />
+
+        <!-- NESTED IF ELSE BLOCK-->
         <if id="sub_if" condition=":b1Var2 == 'overriden-b1Var2'">
       	     <query id="insert_dummy" query-file="insert_into_dummy.hql" />
         </if>
+        <else id="sub_else">
+            <print text="sub_if not executed"/>
+        </else>
         <query id="post_if" query-file="post_if.hql" />
         
+        <!-- FOR EACH RECORD FETCHED FROM QUERY, ITERATE AND EXECUTE SUB ELEMENTS-->
         <for id="for each dummy value" query-file="iterate_dummy.hql">
-          <variable name="dummyfield" type="string"/>
+          <variable name="dummyfield" type="int"/>
           <print text="Got Dummy Value=:dummyfield"/>
-        </for>    
+        </for> 
     </if>
-    
+
     <export id="add vars and prepare new" query-file="add_to_vars.hql"/>
     <query id="last insert" query-file="insert_into_dummy_plus.hql" />
-  
+
+    <!-- IF ELSEIF .... ELSE BLOCK: TESTING ELSEIF EXECUTION-->
+    <if id="nano_if" condition=":addVal != 4">
+          <print text="added value is not 4"/>
+    </if>
+    <elseif id="nano_else_if" condition=":addVal == 4">
+          <print text="added value is 4"/>
+    </elseif>
+    <else id="else">
+            <print text="sorry its something else then"/>
+    </else>
+
+    <!-- IF ELSEIF .... ELSE BLOCK: TESTING ELSE EXECUTION-->
+    <if id="nano_if" condition=":addVal == 5">
+          <print text="added value is not 5"/>
+    </if>
+    <elseif id="nano_else_if" condition=":addVal == 6">
+          <print text="added value is 6"/>
+    </elseif>
+    <else id="else">
+            <print text="sorry its something else then"/>
+    </else>
+
   </block>
 </blocks>

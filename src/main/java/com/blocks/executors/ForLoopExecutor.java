@@ -56,7 +56,7 @@ public class ForLoopExecutor {
 	private void iterateOverQueryResults(String queryFilePath, For loop, String basePath, String immediateParentId,
 			DBConfiguration dbConfiguration) {
 
-		IFExecutor ifExecutor = new IFExecutor();
+		IfExecutor ifExecutor = new IfExecutor();
 		ExportExecutor exportExecutor = new ExportExecutor();
 		QueryExecutor queryExecutor = new QueryExecutor();
 		PrintExecutor printExecutor = new PrintExecutor();

@@ -10,7 +10,6 @@ public class For implements Element, Parent {
 	String condition;
 	String queryFile;
 	Parent parent;
-
 	LinkedList<Element> elements = new LinkedList<Element>();
 	Map<String, Object> variableExportedValuesMap = new HashMap<String, Object>();
 	Map<String, Object> variableAssignedValuesMap = new HashMap<String, Object>();
