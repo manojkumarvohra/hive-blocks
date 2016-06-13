@@ -1,7 +1,8 @@
+C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-Blocks-0.0.1-jar-with-dependencies.jar com.blocks.main.HBlockExecutor C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/hive_blocks.xml C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/hive_blocks.properties
 
 --------------------------------Executing XML---------------------------------------------
 
-<?xml version="1.0" encoding="UTF-8"?><blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/">
+<?xml version="1.0" encoding="UTF-8"?><blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/">
   <block id="first-block">
     <variable name="b1Var1" type="int"/>
     <variable name="b1Var2" type="string"/>
