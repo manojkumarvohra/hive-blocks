@@ -74,7 +74,15 @@ Note: The supporting files for above block configuration can be found in sample 
   -   \<print\>
 - A \<print\> signify a text/comment which can be printed with in execution for information purpose. Text can contain variables in format :variableName
 
-Requirements
+Requirements 
 ------------
-JDK 1.8
+JDK 1.7 & above
 MVN 3
+
+How to execute samples?
+-----------------------
+- Download Hive-Blocks-0.0.1-jar-with-dependencies.jar, hive_blocks.properties, samples folder.
+- Change db properties in hive_blocks.properties
+- With in samples folder, alter file hive_blocks.xml - set base-path = directory where hql files can be located
+- Execute class com.blocks.main.HBlockExecutor and provide it two arguments in order: blocks-xml-config, blocks properties file path
+  - java -cp Hive-Blocks-0.0.1-jar-with-dependencies.jar com.blocks.main.HBlockExecutor C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/hive_blocks.xml C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/hive_blocks.properties
