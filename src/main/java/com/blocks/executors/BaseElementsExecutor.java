@@ -16,12 +16,21 @@ import com.blocks.model.Query;
 import com.blocks.model.Variable;
 
 public abstract class BaseElementsExecutor {
-	
+
 	protected void prepareVariablesMap(Parent parent) {
 		Map<String, Object> variableExportedValuesMap = new HashMap<String, Object>();
 		Map<String, Object> variableAssignedValuesMap = new HashMap<String, Object>();
 		Map<String, String> variableTypeMap = new HashMap<String, String>();
 		for (Variable variable : parent.getVariables()) {
+
+			String name = variable.getName();
+
+			if (name == null) {
+				throw new RuntimeException("ERROR:Missing variable name");
+			} else if (name.startsWith(":")) {
+				throw new RuntimeException("ERROR:Invalid variable name [" + name + "] can't start with :");
+			}
+
 			variableExportedValuesMap.put(variable.getName(), null);
 			variableAssignedValuesMap.put(variable.getName(), variable.getValue());
 			variableTypeMap.put(variable.getName(), variable.getType());
@@ -50,8 +59,7 @@ public abstract class BaseElementsExecutor {
 			ifElement.setParent(parent);
 
 			if (ifElement instanceof If) {
-				previous_if_executed = ifExecutor.execute((If) ifElement, basePath, immediateParentId,
-						dbConfiguration);
+				previous_if_executed = ifExecutor.execute((If) ifElement, basePath, immediateParentId, dbConfiguration);
 				lastElementExecuted = ifElement;
 			} else if (ifElement instanceof ElseIf) {
 
@@ -72,8 +80,7 @@ public abstract class BaseElementsExecutor {
 
 				if (lastElementExecuted instanceof If || lastElementExecuted instanceof ElseIf) {
 					if (!previous_if_executed) {
-						elseExecutor.execute((Else) ifElement, basePath, immediateParentId,
-								dbConfiguration);
+						elseExecutor.execute((Else) ifElement, basePath, immediateParentId, dbConfiguration);
 						previous_if_executed = null;
 					}
 				} else {

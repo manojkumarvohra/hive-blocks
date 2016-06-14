@@ -26,7 +26,7 @@ import com.blocks.model.Parent;
 public class DBQueryExecutor {
 
 	private static Logger logger = Logger.getLogger(DBQueryExecutor.class);
-	BasicFormatterImpl formatter = new BasicFormatterImpl();
+	private BasicFormatterImpl formatter = new BasicFormatterImpl();
 	private static final String INVALID_DB_DRIVER_MESSAGE_PATTERN = "Database driver class %s not found\n";
 	private static final String QUERY_EXECUTION_ERROR_MESSAGE_PATERN = "Error while executing query on database... \n\t %s \n";
 	private static final String CONNECTION_FAILURE_MESSAGE_PATTERN = "Unable to establish connection to database... %s \n";
@@ -144,6 +144,7 @@ public class DBQueryExecutor {
 			if (!exportQueries.isEmpty()) {
 
 				String exportQuery = exportQueries.get(0);
+				
 				String translatedQuery = substituteVariables(parent, immediateParentId, exportQuery);
 
 				System.out.println("ORIGINAL EXPORT QUERY");
