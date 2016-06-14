@@ -5,16 +5,21 @@ You can provide it a xml in below construct:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/">
+<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/hive-block-new/hive-blocks/samples/">
   <block id="first-block">
     
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
-    <variable name="b1Var1" type="int"/>
+    <variable name="b1Var1" type="numeric"/>
     <variable name="b1Var2" type="string"/>
-    <variable name="addVal" type="int"/>
+    <variable name="addVal" type="numeric"/>
+    <variable name="from_date" type="timestamp"/>
+    <variable name="to_date" type="timestamp"/>
     
     <!-- SELECT QUERY RESULT VALUES INTO VARIABLES-->
     <export id="export_both_vars" query-file="export_vars.hql"/>
+    <export id="export_dates" query-file="export_dates.hql"/>
+
+    <print text="Exported values to date variables -- from_date is :from_date | to_date is :to_date"/>
     
     <!-- IF BLOCK-->
     <if id="if_gt_2" condition=":b1Var1 > 2 AND :b1Var2 == 'abc'">
@@ -32,12 +37,11 @@ You can provide it a xml in below construct:
         <else id="sub_else">
             <print text="sub_if not executed"/>
         </else>
-        
         <query id="post_if" query-file="post_if.hql" />
         
         <!-- FOR EACH RECORD FETCHED FROM QUERY, ITERATE AND EXECUTE SUB ELEMENTS-->
         <for id="for each dummy value" query-file="iterate_dummy.hql">
-          <variable name="dummyfield" type="int"/>
+          <variable name="dummyfield" type="numeric"/>
           <print text="Got Dummy Value=:dummyfield"/>
         </for> 
     </if>
@@ -53,7 +57,7 @@ You can provide it a xml in below construct:
           <print text="added value is 4"/>
     </elseif>
     <else id="else">
-            <print text="sorry its something else then"/>
+            <print text="okay its something else then"/>
     </else>
 
     <!-- IF ELSEIF .... ELSE BLOCK: TESTING ELSE EXECUTION-->
@@ -64,7 +68,7 @@ You can provide it a xml in below construct:
           <print text="added value is 6"/>
     </elseif>
     <else id="else">
-            <print text="sorry its something else then"/>
+            <print text="okay its something else then"/>
     </else>
 
   </block>
