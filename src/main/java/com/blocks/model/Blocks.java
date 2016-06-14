@@ -29,6 +29,6 @@ public class Blocks {
 	}
 
 	public LinkedList<Block> getBlocks() {
-		return blocks;
+		return blocks != null ? blocks : new LinkedList<Block>();
 	}
 }

@@ -12,18 +12,21 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.hibernate.engine.jdbc.internal.BasicFormatterImpl;
 
 import com.blocks.model.Parent;
 
 public class DBQueryExecutor {
 
 	private static Logger logger = Logger.getLogger(DBQueryExecutor.class);
-
+	BasicFormatterImpl formatter = new BasicFormatterImpl();
 	private static final String INVALID_DB_DRIVER_MESSAGE_PATTERN = "Database driver class %s not found\n";
 	private static final String QUERY_EXECUTION_ERROR_MESSAGE_PATERN = "Error while executing query on database... \n\t %s \n";
 	private static final String CONNECTION_FAILURE_MESSAGE_PATTERN = "Unable to establish connection to database... %s \n";
@@ -37,10 +40,12 @@ public class DBQueryExecutor {
 		String conditionQuery = "SELECT " + condition + " FROM default.dual LIMIT 1";
 		String translatedQuery = substituteVariables(parent, immediateParentId, conditionQuery);
 
-		System.out.println("\n--------------------------------------------------------------------------------\n");
-		System.out.println(element + " ORIGINAL QUERY=" + conditionQuery);
-		System.out.println("\n" + element + " TRANSLATED QUERY=" + translatedQuery);
-		System.out.println("\n--------------------------------------------------------------------------------\n");
+		System.out.println("ORIGINAL QUERY");
+		System.out.println("--------------");
+		System.out.println(formatter.format(conditionQuery));
+		System.out.println("\nTRANSLATED QUERY");
+		System.out.println("-----------------");
+		System.out.println(formatter.format(translatedQuery));
 
 		boolean retValue = false;
 
@@ -52,9 +57,9 @@ public class DBQueryExecutor {
 				retValue = resultSet.getBoolean(1);
 			}
 
-			System.out.println("\n....................................\n");
+			System.out.println("....................................");
 			System.out.println(element + ":" + immediateParentId + " RESULT=" + retValue);
-			System.out.println("\n....................................\n");
+			System.out.println("....................................");
 
 		} catch (Throwable t) {
 			System.out.println("ERROR EXECUTING " + element + "CONDITION: " + immediateParentId);
@@ -130,22 +135,29 @@ public class DBQueryExecutor {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
-		String exportQuery = null;
+		List<String> exportQueries = null;
 
 		try {
 
-			exportQuery = getQueryFromQueryFile(queryFilePath, immediateParentId);
-			String translatedQuery = substituteVariables(parent, immediateParentId, exportQuery);
+			exportQueries = getQueriesFromQueryFile(queryFilePath, true);
 
-			System.out.println("\n--------------------------------------------------------------------------------\n");
-			System.out.println("EXPORT ORIGINAL QUERY=" + exportQuery);
-			System.out.println("\nEXPORT TRANSLATED QUERY=" + translatedQuery + "\n");
-			System.out.println("\n--------------------------------------------------------------------------------\n");
+			if (!exportQueries.isEmpty()) {
 
-			resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 1);
+				String exportQuery = exportQueries.get(0);
+				String translatedQuery = substituteVariables(parent, immediateParentId, exportQuery);
 
-			if (resultSet.next()) {
-				exportResultSetToVariables(resultSet, parent);
+				System.out.println("ORIGINAL EXPORT QUERY");
+				System.out.println("---------------------");
+				System.out.println(formatter.format(exportQuery));
+				System.out.println("\nTRANSLATED EXPORT QUERY");
+				System.out.println("------------------------");
+				System.out.println(formatter.format(translatedQuery));
+
+				resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 1);
+
+				if (resultSet.next()) {
+					exportResultSetToVariables(resultSet, parent);
+				}
 			}
 
 		} catch (FileNotFoundException e) {
@@ -197,19 +209,25 @@ public class DBQueryExecutor {
 			DBConfiguration dbConfiguration) {
 		Connection connection = null;
 		Statement statement = null;
-		String query = null;
+		List<String> queries = null;
 
 		try {
 
-			query = getQueryFromQueryFile(queryFilePath, immediateParentId);
-			String translatedQuery = substituteVariables(parent, immediateParentId, query);
+			queries = getQueriesFromQueryFile(queryFilePath, false);
 
-			System.out.println("\n--------------------------------------------------------------------------------\n");
-			System.out.println("ORIGINAL QUERY=" + query + "\n");
-			System.out.println("\nTRANSLATED QUERY=" + translatedQuery + "\n");
-			System.out.println("\n--------------------------------------------------------------------------------\n");
+			for (String query : queries) {
 
-			executeUpdate(dbConfiguration, translatedQuery, connection, statement);
+				String translatedQuery = substituteVariables(parent, immediateParentId, query);
+
+				System.out.println("ORIGINAL QUERY");
+				System.out.println("--------------");
+				System.out.println(formatter.format(query));
+				System.out.println("\nTRANSLATED QUERY");
+				System.out.println("-----------------");
+				System.out.println(formatter.format(translatedQuery));
+
+				executeUpdate(dbConfiguration, translatedQuery, connection, statement);
+			}
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -237,15 +255,23 @@ public class DBQueryExecutor {
 
 		try {
 
-			String query = getQueryFromQueryFile(queryFilePath, immediateParentId);
-			String translatedQuery = substituteVariables(parent, immediateParentId, query);
+			List<String> queries = getQueriesFromQueryFile(queryFilePath, true);
 
-			System.out.println("\n--------------------------------------------------------------------------------\n");
-			System.out.println("ORIGINAL QUERY=" + query + "\n");
-			System.out.println("\nTRANSLATED QUERY=" + translatedQuery + "\n");
-			System.out.println("\n--------------------------------------------------------------------------------\n");
+			if (!queries.isEmpty()) {
 
-			resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 100);
+				String query = queries.get(0);
+				String translatedQuery = substituteVariables(parent, immediateParentId, query);
+
+				System.out.println("ORIGINAL QUERY");
+				System.out.println("--------------");
+				System.out.println(formatter.format(query));
+				System.out.println("\nTRANSLATED QUERY");
+				System.out.println("-----------------");
+				System.out.println(formatter.format(translatedQuery));
+
+				resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 100);
+			}
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			System.out.println("ERROR EXECUTING QUERY: " + immediateParentId);
@@ -265,30 +291,49 @@ public class DBQueryExecutor {
 		return resultSet;
 	}
 
-	private String getQueryFromQueryFile(String queryFilePath, String immediateParentId) throws IOException {
+	private List<String> getQueriesFromQueryFile(String queryFilePath, boolean getOnlyFirstQueryFromFile)
+			throws IOException {
 
-		FileInputStream fis = null;
-		BufferedReader br = null;
-		String query = null;
+		LinkedList<String> queries = new LinkedList<String>();
 
-		fis = new FileInputStream(new File(queryFilePath));
-		br = new BufferedReader(new InputStreamReader(fis));
+		FileInputStream fis = new FileInputStream(new File(queryFilePath));
+		BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+
 		StringBuffer stringBuffer = new StringBuffer();
-
 		String line = null;
 		while ((line = br.readLine()) != null) {
-			stringBuffer.append(" ");
-			stringBuffer.append(line);
-			stringBuffer.append(" ");
+			if (line.endsWith(";") && !line.endsWith("\\;")) {
+				stringBuffer.append(" ");
+				stringBuffer.append(line.substring(0, line.indexOf(";")));
+				stringBuffer.append(" ");
+
+				String query = stringBuffer.toString().trim();
+
+				if (!query.isEmpty()) {
+					queries.add(query);
+				}
+
+				if (getOnlyFirstQueryFromFile && queries.size() == 1) {
+					break;
+				}
+
+				stringBuffer = new StringBuffer();
+			} else {
+				stringBuffer.append(" ");
+				stringBuffer.append(line);
+				stringBuffer.append(" ");
+			}
+
 		}
 		br.close();
 
-		query = stringBuffer.toString().trim();
-		if (query.endsWith(";")) {
-			query = query.substring(0, query.length() - 1);
+		String bufferContent = stringBuffer.toString().trim();
+
+		if (!bufferContent.isEmpty()) {
+			queries.add(bufferContent);
 		}
 
-		return query;
+		return queries;
 	}
 
 	public static void executeUpdate(DBConfiguration dbConfiguration, String query, Connection connection,

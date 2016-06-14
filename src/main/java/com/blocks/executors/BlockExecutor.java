@@ -8,7 +8,7 @@ public class BlockExecutor extends BaseElementsExecutor{
 	public void execute(Block block, String basePath, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing Block[" + block.getId() + "]\n");
+		System.out.println("Executing Block[" + block.getId() + "]");
 		System.out.println("--------------------------------------------------------\n");
 
 		prepareVariablesMap(block);

@@ -12,8 +12,8 @@ public class QueryExecutor {
 	public void execute(Query query, String basePath, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing QUERY[" + query.getId() + "] IN " + immediateParentId + "\n");
-		System.out.println("--------------------------------------------------------\n");
+		System.out.println("Executing QUERY[" + query.getId() + "] IN " + immediateParentId);
+		System.out.println("----------------------------------------------------------\n");
 
 		String queryFile = query.getQueryFile();
 

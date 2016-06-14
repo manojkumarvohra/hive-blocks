@@ -1,9 +1,9 @@
 C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-Blocks-0.0.1-jar-with-dependencies.jar com.blocks.main.HBlockExecutor C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/hive_blocks.xml C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/hive_blocks.properties
 
+
 --------------------------------Executing XML---------------------------------------------
 
-<?xml version="1.0" encoding="UTF-8"?>
-<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/">
+<?xml version="1.0" encoding="UTF-8"?><blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/">
   <block id="first-block">
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
     <variable name="b1Var1" type="int"/>
@@ -12,7 +12,7 @@ C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-B
     <!-- SELECT QUERY RESULT VALUES INTO VARIABLES-->
     <export id="export_both_vars" query-file="export_vars.hql"/>
     <!-- IF BLOCK-->
-    <if id="if_gt_2" condition=":b1Var1 &gt; 2 AND :b1Var2 == 'abc'">
+    <if id="if_gt_2" condition=":b1Var1 &lt; 2 AND :b1Var2 == 'abc'">
       <!-- IF BLOCK LEVEL VARIABLES-->
       <variable name="b1Var2" type="string" value="overriden-b1Var2"/>
       <!-- QUERY TO BE EXECUTED, VARIABLES SUBSTITUTED IF ANY FOUND IN QUERY-->
@@ -63,273 +63,196 @@ Starting execution of blocks:hive-blocks
 
 --------------------------------------------------------
 Executing Block[first-block]
-
 --------------------------------------------------------
 
 
 --------------------------------------------------------
 Executing Export[export_both_vars] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
+ORIGINAL EXPORT QUERY
+---------------------
 
---------------------------------------------------------------------------------
+    select
+        3 b1Var1,
+        'abc' b1Var2 
+    from
+        default.dual limit 1
 
-EXPORT ORIGINAL QUERY=select 3 b1Var1, 'abc' b1Var2 from default.dual limit 1
+TRANSLATED EXPORT QUERY
+------------------------
 
-EXPORT TRANSLATED QUERY=select 3 b1Var1, 'abc' b1Var2 from default.dual limit 1
-
-
---------------------------------------------------------------------------------
-
-log4j:WARN No appenders could be found for logger (org.apache.hive.jdbc.Utils).
-log4j:WARN Please initialize the log4j system properly.
-log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+    select
+        3 b1Var1,
+        'abc' b1Var2 
+    from
+        default.dual limit 1
 
 --------------------------------------------------------
 Executing IF[if_gt_2] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
+ORIGINAL QUERY
+--------------
 
---------------------------------------------------------------------------------
+    SELECT
+        :b1Var1 < 2 
+        AND :b1Var2 == 'abc' 
+    FROM
+        default.dual LIMIT 1
 
-IF ORIGINAL QUERY=SELECT :b1Var1 > 2 AND :b1Var2 == 'abc' FROM default.dual LIMIT 1
+TRANSLATED QUERY
+-----------------
 
-IF TRANSLATED QUERY=SELECT 3 > 2 AND 'abc' == 'abc' FROM default.dual LIMIT 1
-
---------------------------------------------------------------------------------
-
-
+    SELECT
+        3 < 2 
+        AND 'abc' == 'abc' 
+    FROM
+        default.dual LIMIT 1
 ....................................
-
-IF:BLOCK[first-block]IF[if_gt_2] RESULT=true
-
+IF:BLOCK[first-block]IF[if_gt_2] RESULT=false
 ....................................
-
-
---------------------------------------------------------
-Executing QUERY[pre_sub_if] IN BLOCK[first-block]IF[if_gt_2]
-
---------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-
-ORIGINAL QUERY=select 'pre' from default.dual limit 1
-
-
-TRANSLATED QUERY=select 'pre' from default.dual limit 1
-
-
---------------------------------------------------------------------------------
-
-0 rows updated
-
---------------------------------------------------------
-Executing IF[sub_if] IN BLOCK[first-block]IF[if_gt_2]
-
---------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-
-IF ORIGINAL QUERY=SELECT :b1Var2 == 'overriden-b1Var2' FROM default.dual LIMIT 1
-
-IF TRANSLATED QUERY=SELECT 'overriden-b1Var2' == 'overriden-b1Var2' FROM default.dual LIMIT 1
-
---------------------------------------------------------------------------------
-
-
-....................................
-
-IF:BLOCK[first-block]IF[if_gt_2]IF[sub_if] RESULT=true
-
-....................................
-
-
---------------------------------------------------------
-Executing QUERY[insert_dummy] IN BLOCK[first-block]IF[if_gt_2]IF[sub_if]
-
---------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-
-ORIGINAL QUERY=insert into default.dummy values (:b1Var1)
-
-
-TRANSLATED QUERY=insert into default.dummy values (3)
-
-
---------------------------------------------------------------------------------
-
-0 rows updated
-
---------------------------------------------------------
-Executing QUERY[post_if] IN BLOCK[first-block]IF[if_gt_2]
-
---------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-
-ORIGINAL QUERY=select 'post' from default.dual limit 1
-
-
-TRANSLATED QUERY=select 'post' from default.dual limit 1
-
-
---------------------------------------------------------------------------------
-
-0 rows updated
-
---------------------------------------------------------
-Executing FOR[for each dummy value] IN BLOCK[first-block]IF[if_gt_2]
-
---------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-
-ORIGINAL QUERY=select dummyfield from default.dummy limit :b1Var1
-
-
-TRANSLATED QUERY=select dummyfield from default.dummy limit 3
-
-
---------------------------------------------------------------------------------
-
-Got Dummy Value=3
-Got Dummy Value=4
-Got Dummy Value=3
 
 --------------------------------------------------------
 Executing Export[add vars and prepare new] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
+ORIGINAL EXPORT QUERY
+---------------------
 
---------------------------------------------------------------------------------
+    select
+        :b1Var1+1 addVal 
+    from
+        default.dual limit 1
 
-EXPORT ORIGINAL QUERY=select :b1Var1+1 addVal from default.dual limit 1
+TRANSLATED EXPORT QUERY
+------------------------
 
-EXPORT TRANSLATED QUERY=select 3+1 addVal from default.dual limit 1
-
-
---------------------------------------------------------------------------------
-
+    select
+        3+1 addVal 
+    from
+        default.dual limit 1
 
 --------------------------------------------------------
 Executing QUERY[last insert] IN BLOCK[first-block]
+----------------------------------------------------------
 
---------------------------------------------------------
+ORIGINAL QUERY
+--------------
 
+    insert 
+    into
+        default.dummy
+        
+    values
+        (:addVal)
 
---------------------------------------------------------------------------------
+TRANSLATED QUERY
+-----------------
 
-ORIGINAL QUERY=insert into default.dummy values (:addVal)
-
-
-TRANSLATED QUERY=insert into default.dummy values (4)
-
-
---------------------------------------------------------------------------------
-
+    insert 
+    into
+        default.dummy
+        
+    values
+        (4)
 0 rows updated
 
 --------------------------------------------------------
 Executing IF[nano_if] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
+ORIGINAL QUERY
+--------------
 
---------------------------------------------------------------------------------
+    SELECT
+        :addVal != 4 
+    FROM
+        default.dual LIMIT 1
 
-IF ORIGINAL QUERY=SELECT :addVal != 4 FROM default.dual LIMIT 1
+TRANSLATED QUERY
+-----------------
 
-IF TRANSLATED QUERY=SELECT 4 != 4 FROM default.dual LIMIT 1
-
---------------------------------------------------------------------------------
-
-
+    SELECT
+        4 != 4 
+    FROM
+        default.dual LIMIT 1
 ....................................
-
 IF:BLOCK[first-block]IF[nano_if] RESULT=false
-
 ....................................
-
 
 --------------------------------------------------------
 Executing ELSEIF[nano_else_if] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
+ORIGINAL QUERY
+--------------
 
---------------------------------------------------------------------------------
+    SELECT
+        :addVal == 4 
+    FROM
+        default.dual LIMIT 1
 
-ELSEIF ORIGINAL QUERY=SELECT :addVal == 4 FROM default.dual LIMIT 1
+TRANSLATED QUERY
+-----------------
 
-ELSEIF TRANSLATED QUERY=SELECT 4 == 4 FROM default.dual LIMIT 1
-
---------------------------------------------------------------------------------
-
-
+    SELECT
+        4 == 4 
+    FROM
+        default.dual LIMIT 1
 ....................................
-
 ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if] RESULT=true
-
 ....................................
-
 added value is 4
 
 --------------------------------------------------------
 Executing IF[nano_if] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
+ORIGINAL QUERY
+--------------
 
---------------------------------------------------------------------------------
+    SELECT
+        :addVal == 5 
+    FROM
+        default.dual LIMIT 1
 
-IF ORIGINAL QUERY=SELECT :addVal == 5 FROM default.dual LIMIT 1
+TRANSLATED QUERY
+-----------------
 
-IF TRANSLATED QUERY=SELECT 4 == 5 FROM default.dual LIMIT 1
-
---------------------------------------------------------------------------------
-
-
+    SELECT
+        4 == 5 
+    FROM
+        default.dual LIMIT 1
 ....................................
-
 IF:BLOCK[first-block]IF[nano_if] RESULT=false
-
 ....................................
-
 
 --------------------------------------------------------
 Executing ELSEIF[nano_else_if] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
+ORIGINAL QUERY
+--------------
 
---------------------------------------------------------------------------------
+    SELECT
+        :addVal == 6 
+    FROM
+        default.dual LIMIT 1
 
-ELSEIF ORIGINAL QUERY=SELECT :addVal == 6 FROM default.dual LIMIT 1
+TRANSLATED QUERY
+-----------------
 
-ELSEIF TRANSLATED QUERY=SELECT 4 == 6 FROM default.dual LIMIT 1
-
---------------------------------------------------------------------------------
-
-
+    SELECT
+        4 == 6 
+    FROM
+        default.dual LIMIT 1
 ....................................
-
 ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if] RESULT=false
-
 ....................................
-
 
 --------------------------------------------------------
 Executing ELSE[else] IN BLOCK[first-block]
-
 --------------------------------------------------------
 
 sorry its something else then

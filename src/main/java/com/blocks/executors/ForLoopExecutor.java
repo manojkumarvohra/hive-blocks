@@ -25,7 +25,7 @@ public class ForLoopExecutor {
 	public void execute(For loop, String basePath, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing FOR[" + loop.getId() + "] IN " + immediateParentId + "\n");
+		System.out.println("Executing FOR[" + loop.getId() + "] IN " + immediateParentId);
 		System.out.println("--------------------------------------------------------\n");
 
 		String queryFile = loop.getQueryFile();

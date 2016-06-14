@@ -12,7 +12,7 @@ public class ExportExecutor {
 	public void execute(Export export, String basePath, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing Export[" + export.getId() + "] IN " + immediateParentId + "\n");
+		System.out.println("Executing Export[" + export.getId() + "] IN " + immediateParentId);
 		System.out.println("--------------------------------------------------------\n");
 
 		String queryFile = export.getQueryFile();

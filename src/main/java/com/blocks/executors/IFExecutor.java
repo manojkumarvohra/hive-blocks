@@ -12,7 +12,7 @@ public class IfExecutor extends BaseElementsExecutor {
 	public Boolean execute(If fi, String basePath, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing IF[" + fi.getId() + "] IN " + immediateParentId + "\n");
+		System.out.println("Executing IF[" + fi.getId() + "] IN " + immediateParentId);
 		System.out.println("--------------------------------------------------------\n");
 
 		String condition = fi.getCondition();

@@ -12,7 +12,7 @@ public class ElseIfExecutor extends BaseElementsExecutor {
 	public Boolean execute(ElseIf elseif, String basePath, String immediateParentId, DBConfiguration dbConfiguration) {
 
 		System.out.println("\n--------------------------------------------------------");
-		System.out.println("Executing ELSEIF[" + elseif.getId() + "] IN " + immediateParentId + "\n");
+		System.out.println("Executing ELSEIF[" + elseif.getId() + "] IN " + immediateParentId);
 		System.out.println("--------------------------------------------------------\n");
 
 		String condition = elseif.getCondition();
