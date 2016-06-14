@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import com.blocks.dao.DBConfiguration;
 import com.blocks.executors.BlocksExecutor;
 import com.blocks.model.Blocks;
+import com.blocks.util.HBlocksJobParser;
+import com.blocks.util.HBlocksSemanticsValidator;
 
 public class HBlockExecutor {
 
@@ -41,7 +43,12 @@ public class HBlockExecutor {
 		hBlocksJobParser.printXML(args);
 		System.out.println(
 				"\n------------------------------------------------------------------------------------------\n");
-
+		
+		System.out.println("Validating Blocks Semantics");
+		HBlocksSemanticsValidator semanticsValidator = new HBlocksSemanticsValidator();
+		semanticsValidator.validate(blocks);
+		System.out.println("Blocks Semantics are correct");
+		
 		DBConfiguration dbConfiguration = getDbConfiguration(args);
 		BlocksExecutor blocksExecutor = new BlocksExecutor();
 		blocksExecutor.execute(blocks, dbConfiguration);

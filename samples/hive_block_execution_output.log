@@ -1,14 +1,15 @@
 C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-Blocks-0.0.1-jar-with-dependencies.jar com.blocks.main.HBlockExecutor C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/hive_blocks.xml C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/hive_blocks.properties
 
+
 --------------------------------Executing XML---------------------------------------------
 
 <?xml version="1.0" encoding="UTF-8"?>
 <blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/hive-block-new/hive-blocks/samples/">
   <block id="first-block">
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
-    <variable name="b1Var1" type="int"/>
+    <variable name="b1Var1" type="numeric"/>
     <variable name="b1Var2" type="string"/>
-    <variable name="addVal" type="int"/>
+    <variable name="addVal" type="numeric"/>
     <variable name="from_date" type="timestamp"/>
     <variable name="to_date" type="timestamp"/>
     <!-- SELECT QUERY RESULT VALUES INTO VARIABLES-->
@@ -31,7 +32,7 @@ C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-B
       <query id="post_if" query-file="post_if.hql"/>
       <!-- FOR EACH RECORD FETCHED FROM QUERY, ITERATE AND EXECUTE SUB ELEMENTS-->
       <for id="for each dummy value" query-file="iterate_dummy.hql">
-        <variable name="dummyfield" type="int"/>
+        <variable name="dummyfield" type="numeric"/>
         <print text="Got Dummy Value=:dummyfield"/>
       </for>
     </if>
@@ -63,6 +64,8 @@ C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-B
 
 ------------------------------------------------------------------------------------------
 
+Validating Blocks Semantics
+Blocks Semantics are correct
 Starting execution of blocks:hive-blocks
 
 --------------------------------------------------------

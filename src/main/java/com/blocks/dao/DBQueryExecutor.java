@@ -103,9 +103,8 @@ public class DBQueryExecutor {
 					String valueToBeReplaced = valueObj.toString();
 					String varType = variableTypeMap.get(key);
 
-					if (varType.equalsIgnoreCase("string") || varType.equalsIgnoreCase("varchar")
-							|| varType.equalsIgnoreCase("char") || varType.equalsIgnoreCase("date")
-							|| varType.equalsIgnoreCase("timestamp")) {
+					if (varType.equalsIgnoreCase("string") || varType.equalsIgnoreCase("char")
+							|| varType.equalsIgnoreCase("date") || varType.equalsIgnoreCase("timestamp")) {
 
 						valueToBeReplaced = "'" + valueToBeReplaced + "'";
 					}
@@ -144,7 +143,7 @@ public class DBQueryExecutor {
 			if (!exportQueries.isEmpty()) {
 
 				String exportQuery = exportQueries.get(0);
-				
+
 				String translatedQuery = substituteVariables(parent, immediateParentId, exportQuery);
 
 				System.out.println("ORIGINAL EXPORT QUERY");

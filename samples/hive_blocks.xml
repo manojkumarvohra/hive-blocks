@@ -3,9 +3,9 @@
   <block id="first-block">
     
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
-    <variable name="b1Var1" type="int"/>
+    <variable name="b1Var1" type="numeric"/>
     <variable name="b1Var2" type="string"/>
-    <variable name="addVal" type="int"/>
+    <variable name="addVal" type="numeric"/>
     <variable name="from_date" type="timestamp"/>
     <variable name="to_date" type="timestamp"/>
     
@@ -35,7 +35,7 @@
         
         <!-- FOR EACH RECORD FETCHED FROM QUERY, ITERATE AND EXECUTE SUB ELEMENTS-->
         <for id="for each dummy value" query-file="iterate_dummy.hql">
-          <variable name="dummyfield" type="int"/>
+          <variable name="dummyfield" type="numeric"/>
           <print text="Got Dummy Value=:dummyfield"/>
         </for> 
     </if>
