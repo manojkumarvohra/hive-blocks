@@ -1,10 +1,7 @@
 C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-Blocks-0.0.1-jar-with-dependencies.jar com.blocks.main.HBlockExecutor C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/hive_blocks.xml C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/hive_blocks.properties
 
-
 --------------------------------Executing XML---------------------------------------------
-
-<?xml version="1.0" encoding="UTF-8"?>
-<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hblocks/hive-block-new/hive-blocks/samples/">
+<?xml version="1.0" encoding="UTF-8"?><blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks-latest/hive-blocks/samples/">
   <block id="first-block">
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
     <variable name="b1Var1" type="numeric"/>
@@ -16,6 +13,7 @@ C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-B
     <export id="export_both_vars" query-file="export_vars.hql"/>
     <export id="export_dates" query-file="export_dates.hql"/>
     <print text="Exported values to date variables -- from_date is :from_date | to_date is :to_date"/>
+    <query id="create and delete" query-file="create_and_delete_from_created.hql"/>
     <!-- IF BLOCK-->
     <if id="if_gt_2" condition=":b1Var1 &gt; 2 AND :b1Var2 == 'abc'">
       <!-- IF BLOCK LEVEL VARIABLES-->
@@ -124,7 +122,54 @@ TRANSLATED EXPORT QUERY
         ' 23:59:59') to_date 
     from
         default.dual
-Exported values to date variables -- from_date is '2016-06-14 00:00:00' | to_date is '2016-06-14 23:59:59'
+Exported values to date variables -- from_date is '2016-06-15 00:00:00' | to_date is '2016-06-15 23:59:59'
+
+--------------------------------------------------------
+Executing QUERY[create and delete] IN BLOCK[first-block]
+----------------------------------------------------------
+
+ORIGINAL QUERY
+--------------
+
+    use default
+
+TRANSLATED QUERY
+-----------------
+
+    use default
+0 rows updated
+ORIGINAL QUERY
+--------------
+
+    CREATE TABLE IF NOT EXISTS default.blocks_hive(    name varchar(10))  CLUSTERED 
+BY
+    (name) 
+INTO
+    1 BUCKETS  STORED AS ORC   TBLPROPERTIES ('transactional'='true')
+
+TRANSLATED QUERY
+-----------------
+
+    CREATE TABLE IF NOT EXISTS default.blocks_hive(    name varchar(10))  CLUSTERED 
+BY
+    (name) 
+INTO
+    1 BUCKETS  STORED AS ORC   TBLPROPERTIES ('transactional'='true')
+0 rows updated
+ORIGINAL QUERY
+--------------
+
+    DELETE 
+    FROM
+        default.blocks_hive
+
+TRANSLATED QUERY
+-----------------
+
+    DELETE 
+    FROM
+        default.blocks_hive
+0 rows updated
 
 --------------------------------------------------------
 Executing IF[if_gt_2] IN BLOCK[first-block]
