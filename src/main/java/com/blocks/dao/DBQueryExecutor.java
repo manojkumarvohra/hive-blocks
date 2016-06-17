@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.engine.jdbc.internal.BasicFormatterImpl;
 
 import com.blocks.model.Parent;
+import com.blocks.util.Evaluator;
 
 public class DBQueryExecutor {
 
@@ -31,7 +32,7 @@ public class DBQueryExecutor {
 	private static final String QUERY_EXECUTION_ERROR_MESSAGE_PATERN = "Error while executing query on database... \n\t %s \n";
 	private static final String CONNECTION_FAILURE_MESSAGE_PATTERN = "Unable to establish connection to database... %s \n";
 
-	public boolean checkCondition(String element, String condition, Parent parent, String immediateParentId,
+	public boolean checkConditionOnDatabase(String element, String condition, Parent parent, String immediateParentId,
 			DBConfiguration dbConfiguration) {
 
 		Connection connection = null;
@@ -71,6 +72,54 @@ public class DBQueryExecutor {
 		}
 
 		return retValue;
+	}
+
+	public boolean checkConditionOnEngine(String element, String condition, Parent parent, String immediateParentId,
+			DBConfiguration dbConfiguration) {
+
+		String translatedCondition = substituteVariables(parent, immediateParentId, condition);
+		translatedCondition = substituteOperators(translatedCondition);
+		Boolean result = Evaluator.evaluateToBoolean(translatedCondition);
+
+		System.out.println("....................................");
+		System.out.println(
+				element + ":" + immediateParentId + "\nCONDITION:[" + translatedCondition + "]\nRESULT=" + result);
+		System.out.println("....................................");
+
+		return result;
+	}
+
+	private String substituteOperators(String condition) {
+		
+		String translatedCondition = condition;
+		
+		Pattern andReplacementPattern = Pattern.compile("([aA][nN][dD])");
+		Pattern orReplacementPattern = Pattern.compile("([oO][rR])");
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		Matcher operatorMatcher = andReplacementPattern.matcher(translatedCondition);
+
+		while (operatorMatcher.find()) {
+			String replacementString = " && ";
+			operatorMatcher.appendReplacement(stringBuffer, replacementString);
+
+		}
+		operatorMatcher.appendTail(stringBuffer);
+		translatedCondition = stringBuffer.toString();
+		
+		stringBuffer = new StringBuffer();
+		operatorMatcher = orReplacementPattern.matcher(translatedCondition);
+
+		while (operatorMatcher.find()) {
+			String replacementString = " || ";
+			operatorMatcher.appendReplacement(stringBuffer, replacementString);
+
+		}
+		operatorMatcher.appendTail(stringBuffer);
+		translatedCondition = stringBuffer.toString();
+
+
+		return translatedCondition;
 	}
 
 	public String substituteVariables(Parent parent, String immediateParentId, String conditionQuery) {

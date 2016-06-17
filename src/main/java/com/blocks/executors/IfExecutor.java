@@ -39,6 +39,6 @@ public class IfExecutor extends BaseElementsExecutor {
 
 	private boolean checkIfCondition(String condition, Parent parent, String immediateParentId,
 			DBConfiguration dbConfiguration) {
-		return dbQueryExecutor.checkCondition("IF", condition, parent, immediateParentId, dbConfiguration);
+		return dbQueryExecutor.checkConditionOnEngine("IF", condition, parent, immediateParentId, dbConfiguration);
 	}
 }

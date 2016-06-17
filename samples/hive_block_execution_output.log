@@ -1,7 +1,9 @@
 C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-Blocks-0.0.1-jar-with-dependencies.jar com.blocks.main.HBlockExecutor C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/samples/hive_blocks.xml C:/Users/manojkumar.vohra/Desktop/hive-blocks/hive-blocks/hive_blocks.properties
 
 --------------------------------Executing XML---------------------------------------------
-<?xml version="1.0" encoding="UTF-8"?><blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks-latest/hive-blocks/samples/">
+
+<?xml version="1.0" encoding="UTF-8"?>
+<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/workspace/Hive-Blocks/samples/">
   <block id="first-block">
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
     <variable name="b1Var1" type="numeric"/>
@@ -13,7 +15,7 @@ C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-B
     <export id="export_both_vars" query-file="export_vars.hql"/>
     <export id="export_dates" query-file="export_dates.hql"/>
     <print text="Exported values to date variables -- from_date is :from_date | to_date is :to_date"/>
-    <query id="create and delete" query-file="create_and_delete_from_created.hql"/>
+    <query id="create and delete" query-file="create_and_delete_from_created.hql" />
     <!-- IF BLOCK-->
     <if id="if_gt_2" condition=":b1Var1 &gt; 2 AND :b1Var2 == 'abc'">
       <!-- IF BLOCK LEVEL VARIABLES-->
@@ -122,7 +124,7 @@ TRANSLATED EXPORT QUERY
         ' 23:59:59') to_date 
     from
         default.dual
-Exported values to date variables -- from_date is '2016-06-15 00:00:00' | to_date is '2016-06-15 23:59:59'
+Exported values to date variables -- from_date is '2016-06-17 00:00:00' | to_date is '2016-06-17 23:59:59'
 
 --------------------------------------------------------
 Executing QUERY[create and delete] IN BLOCK[first-block]
@@ -175,25 +177,10 @@ TRANSLATED QUERY
 Executing IF[if_gt_2] IN BLOCK[first-block]
 --------------------------------------------------------
 
-ORIGINAL QUERY
---------------
-
-    SELECT
-        :b1Var1 > 2 
-        AND :b1Var2 == 'abc' 
-    FROM
-        default.dual LIMIT 1
-
-TRANSLATED QUERY
------------------
-
-    SELECT
-        3 > 2 
-        AND 'abc' == 'abc' 
-    FROM
-        default.dual LIMIT 1
 ....................................
-IF:BLOCK[first-block]IF[if_gt_2] RESULT=true
+IF:BLOCK[first-block]IF[if_gt_2]
+CONDITION:[3 > 2  &&  'abc' == 'abc']
+RESULT=true
 ....................................
 
 --------------------------------------------------------
@@ -237,23 +224,10 @@ TRANSLATED QUERY
 Executing IF[sub_if] IN BLOCK[first-block]IF[if_gt_2]
 --------------------------------------------------------
 
-ORIGINAL QUERY
---------------
-
-    SELECT
-        :b1Var2 == 'overriden-b1Var2' 
-    FROM
-        default.dual LIMIT 1
-
-TRANSLATED QUERY
------------------
-
-    SELECT
-        'overriden-b1Var2' == 'overriden-b1Var2' 
-    FROM
-        default.dual LIMIT 1
 ....................................
-IF:BLOCK[first-block]IF[if_gt_2]IF[sub_if] RESULT=true
+IF:BLOCK[first-block]IF[if_gt_2]IF[sub_if]
+CONDITION:['overriden-b1Var2' == 'overriden-b1Var2']
+RESULT=true
 ....................................
 
 --------------------------------------------------------
@@ -374,46 +348,20 @@ TRANSLATED QUERY
 Executing IF[nano_if] IN BLOCK[first-block]
 --------------------------------------------------------
 
-ORIGINAL QUERY
---------------
-
-    SELECT
-        :addVal != 4 
-    FROM
-        default.dual LIMIT 1
-
-TRANSLATED QUERY
------------------
-
-    SELECT
-        4 != 4 
-    FROM
-        default.dual LIMIT 1
 ....................................
-IF:BLOCK[first-block]IF[nano_if] RESULT=false
+IF:BLOCK[first-block]IF[nano_if]
+CONDITION:[4 != 4]
+RESULT=false
 ....................................
 
 --------------------------------------------------------
 Executing ELSEIF[nano_else_if] IN BLOCK[first-block]
 --------------------------------------------------------
 
-ORIGINAL QUERY
---------------
-
-    SELECT
-        :addVal == 4 
-    FROM
-        default.dual LIMIT 1
-
-TRANSLATED QUERY
------------------
-
-    SELECT
-        4 == 4 
-    FROM
-        default.dual LIMIT 1
 ....................................
-ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if] RESULT=true
+ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if]
+CONDITION:[4 == 4]
+RESULT=true
 ....................................
 added value is 4
 
@@ -421,46 +369,20 @@ added value is 4
 Executing IF[nano_if] IN BLOCK[first-block]
 --------------------------------------------------------
 
-ORIGINAL QUERY
---------------
-
-    SELECT
-        :addVal == 5 
-    FROM
-        default.dual LIMIT 1
-
-TRANSLATED QUERY
------------------
-
-    SELECT
-        4 == 5 
-    FROM
-        default.dual LIMIT 1
 ....................................
-IF:BLOCK[first-block]IF[nano_if] RESULT=false
+IF:BLOCK[first-block]IF[nano_if]
+CONDITION:[4 == 5]
+RESULT=false
 ....................................
 
 --------------------------------------------------------
 Executing ELSEIF[nano_else_if] IN BLOCK[first-block]
 --------------------------------------------------------
 
-ORIGINAL QUERY
---------------
-
-    SELECT
-        :addVal == 6 
-    FROM
-        default.dual LIMIT 1
-
-TRANSLATED QUERY
------------------
-
-    SELECT
-        4 == 6 
-    FROM
-        default.dual LIMIT 1
 ....................................
-ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if] RESULT=false
+ELSEIF:BLOCK[first-block]ELSEIF[nano_else_if]
+CONDITION:[4 == 6]
+RESULT=false
 ....................................
 
 --------------------------------------------------------

@@ -39,6 +39,6 @@ public class ElseIfExecutor extends BaseElementsExecutor {
 
 	private boolean checkIfCondition(String condition, Parent parent, String immediateParentId,
 			DBConfiguration dbConfiguration) {
-		return dbQueryExecutor.checkCondition("ELSEIF", condition, parent, immediateParentId, dbConfiguration);
+		return dbQueryExecutor.checkConditionOnEngine("ELSEIF", condition, parent, immediateParentId, dbConfiguration);
 	}
 }
