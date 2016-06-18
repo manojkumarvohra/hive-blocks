@@ -15,9 +15,9 @@ C:\Users\manojkumar.vohra\Desktop\hive-blocks\hive-blocks\target>java -cp Hive-B
     <export id="export_both_vars" query-file="export_vars.hql"/>
     <export id="export_dates" query-file="export_dates.hql"/>
     <print text="Exported values to date variables -- from_date is :from_date | to_date is :to_date"/>
-    <query id="create and delete" query-file="create_and_delete_from_created.hql" />
+    <query id="create and delete" query-file="create_and_delete_from_created.hql"/>
     <!-- IF BLOCK-->
-    <if id="if_gt_2" condition=":b1Var1 &gt; 2 AND :b1Var2 == 'abc'">
+    <if id="if_gt_2" condition="(( :b1Var1 between 2 and 10 ) AND :b1Var2 == 'abc')">
       <!-- IF BLOCK LEVEL VARIABLES-->
       <variable name="b1Var2" type="string" value="overriden-b1Var2"/>
       <!-- QUERY TO BE EXECUTED, VARIABLES SUBSTITUTED IF ANY FOUND IN QUERY-->
@@ -124,7 +124,7 @@ TRANSLATED EXPORT QUERY
         ' 23:59:59') to_date 
     from
         default.dual
-Exported values to date variables -- from_date is '2016-06-17 00:00:00' | to_date is '2016-06-17 23:59:59'
+Exported values to date variables -- from_date is '2016-06-18 00:00:00' | to_date is '2016-06-18 23:59:59'
 
 --------------------------------------------------------
 Executing QUERY[create and delete] IN BLOCK[first-block]
@@ -179,7 +179,7 @@ Executing IF[if_gt_2] IN BLOCK[first-block]
 
 ....................................
 IF:BLOCK[first-block]IF[if_gt_2]
-CONDITION:[3 > 2  &&  'abc' == 'abc']
+CONDITION:[(( 3 >= 2 && 3 <= 10 ) && 'abc' == 'abc')]
 RESULT=true
 ....................................
 

@@ -77,8 +77,9 @@ public class DBQueryExecutor {
 	public boolean checkConditionOnEngine(String element, String condition, Parent parent, String immediateParentId,
 			DBConfiguration dbConfiguration) {
 
-		String translatedCondition = substituteVariables(parent, immediateParentId, condition);
+		String translatedCondition = transformBetweenExpression(condition);
 		translatedCondition = substituteOperators(translatedCondition);
+		translatedCondition = substituteVariables(parent, immediateParentId, translatedCondition);
 		Boolean result = Evaluator.evaluateToBoolean(translatedCondition);
 
 		System.out.println("....................................");
@@ -89,13 +90,38 @@ public class DBQueryExecutor {
 		return result;
 	}
 
-	private String substituteOperators(String condition) {
-		
+	private String transformBetweenExpression(String condition) {
+
 		String translatedCondition = condition;
-		
-		Pattern andReplacementPattern = Pattern.compile("([aA][nN][dD])");
-		Pattern orReplacementPattern = Pattern.compile("([oO][rR])");
-		
+
+		Pattern betweenReplacementPatternEnclosed = Pattern
+				.compile("\\s(\\S+)\\s+[bB][eE][tT][wW][eE][eE][nN]\\s+(\\S+)\\s+[aA][nN][dD]\\s+(\\S+)\\s");
+
+		StringBuffer stringBuffer = new StringBuffer();
+		Matcher betweenPatterMatcherEnclosed = betweenReplacementPatternEnclosed.matcher(translatedCondition);
+		while (betweenPatterMatcherEnclosed.find()) {
+			String operand1 = betweenPatterMatcherEnclosed.group(1);
+			String operand2 = betweenPatterMatcherEnclosed.group(2);
+			String operand3 = betweenPatterMatcherEnclosed.group(3);
+
+			String replacementStringEnclosed = " " + operand1 + " >= " + operand2 + " and " + operand1 + " <= "
+					+ operand3 + " ";
+
+			betweenPatterMatcherEnclosed.appendReplacement(stringBuffer, replacementStringEnclosed);
+		}
+		betweenPatterMatcherEnclosed.appendTail(stringBuffer);
+		translatedCondition = stringBuffer.toString();
+
+		return translatedCondition;
+	}
+
+	private String substituteOperators(String condition) {
+
+		String translatedCondition = condition;
+
+		Pattern andReplacementPattern = Pattern.compile("(\\s+[aA][nN][dD]\\s+)");
+		Pattern orReplacementPattern = Pattern.compile("(\\s+[oO][rR]\\s+)");
+
 		StringBuffer stringBuffer = new StringBuffer();
 		Matcher operatorMatcher = andReplacementPattern.matcher(translatedCondition);
 
@@ -106,7 +132,7 @@ public class DBQueryExecutor {
 		}
 		operatorMatcher.appendTail(stringBuffer);
 		translatedCondition = stringBuffer.toString();
-		
+
 		stringBuffer = new StringBuffer();
 		operatorMatcher = orReplacementPattern.matcher(translatedCondition);
 
@@ -117,7 +143,6 @@ public class DBQueryExecutor {
 		}
 		operatorMatcher.appendTail(stringBuffer);
 		translatedCondition = stringBuffer.toString();
-
 
 		return translatedCondition;
 	}

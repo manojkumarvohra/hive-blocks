@@ -15,9 +15,9 @@
 
     <print text="Exported values to date variables -- from_date is :from_date | to_date is :to_date"/>
     
-    <!-- <query id="create and delete" query-file="create_and_delete_from_created.hql" /> -->
+     <query id="create and delete" query-file="create_and_delete_from_created.hql" />
     <!-- IF BLOCK-->
-    <if id="if_gt_2" condition=":b1Var1 > 2 AND :b1Var2 == 'abc'">
+    <if id="if_gt_2" condition="(( :b1Var1 between 2 and 10 ) AND :b1Var2 == 'abc')">
     
         <!-- IF BLOCK LEVEL VARIABLES-->
         <variable name="b1Var2" type="string" value="overriden-b1Var2"/>

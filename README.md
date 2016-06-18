@@ -5,7 +5,7 @@ You can provide it a xml in below construct:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks-latest/hive-blocks/samples/">
+<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/workspace/Hive-Blocks/samples/">
   <block id="first-block">
     
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
@@ -21,9 +21,9 @@ You can provide it a xml in below construct:
 
     <print text="Exported values to date variables -- from_date is :from_date | to_date is :to_date"/>
     
-    <query id="create and delete" query-file="create_and_delete_from_created.hql" />
+     <query id="create and delete" query-file="create_and_delete_from_created.hql" />
     <!-- IF BLOCK-->
-    <if id="if_gt_2" condition=":b1Var1 > 2 AND :b1Var2 == 'abc'">
+    <if id="if_gt_2" condition="(( :b1Var1 between 2 and 10 ) AND :b1Var2 == 'abc')">
     
         <!-- IF BLOCK LEVEL VARIABLES-->
         <variable name="b1Var2" type="string" value="overriden-b1Var2"/>
@@ -33,7 +33,7 @@ You can provide it a xml in below construct:
 
         <!-- NESTED IF ELSE BLOCK-->
         <if id="sub_if" condition=":b1Var2 == 'overriden-b1Var2'">
-             <query id="insert_dummy" query-file="insert_into_dummy.hql" />
+      	     <query id="insert_dummy" query-file="insert_into_dummy.hql" />
         </if>
         <else id="sub_else">
             <print text="sub_if not executed"/>
