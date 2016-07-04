@@ -61,7 +61,7 @@ public class ForLoopExecutor {
 		QueryExecutor queryExecutor = new QueryExecutor();
 		PrintExecutor printExecutor = new PrintExecutor();
 		ForLoopExecutor forLoopExecutor = new ForLoopExecutor();
-		
+
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
@@ -70,6 +70,8 @@ public class ForLoopExecutor {
 
 			resultSet = executeQueryAndFetchResults(queryFilePath, loop.getParent(), immediateParentId, dbConfiguration,
 					connection, statement, resultSet);
+			statement = resultSet.getStatement();
+			connection = statement.getConnection();
 
 			while (resultSet.next()) {
 
@@ -85,19 +87,19 @@ public class ForLoopExecutor {
 						exportExecutor.execute((Export) loopElement, basePath, immediateParentId, dbConfiguration);
 					} else if (loopElement instanceof Query) {
 						queryExecutor.execute((Query) loopElement, basePath, immediateParentId, dbConfiguration);
-					}else if (loopElement instanceof Print) {
+					} else if (loopElement instanceof Print) {
 						printExecutor.execute((Print) loopElement, basePath, immediateParentId, dbConfiguration);
-					}else if (loopElement instanceof For) {
+					} else if (loopElement instanceof For) {
 						forLoopExecutor.execute((For) loopElement, basePath, immediateParentId, dbConfiguration);
 					}
-					
+
 				}
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			throw new RuntimeException("Error: Error executing FOR[ " + immediateParentId + "]\n");
 		} finally {
-			dbQueryExecutor.cleanUpConnection(connection, statement, resultSet);
+			DBQueryExecutor.cleanUpConnection(connection, statement, resultSet);
 		}
 
 	}

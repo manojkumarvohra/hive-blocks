@@ -53,6 +53,8 @@ public class DBQueryExecutor {
 		try {
 
 			resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 1);
+			statement = resultSet.getStatement();
+			connection = statement.getConnection();
 
 			if (resultSet.next()) {
 				retValue = resultSet.getBoolean(1);
@@ -228,6 +230,8 @@ public class DBQueryExecutor {
 				System.out.println(formatter.format(translatedQuery));
 
 				resultSet = executeQuery(dbConfiguration, translatedQuery, connection, statement, resultSet, 1);
+				statement = resultSet.getStatement();
+				connection = statement.getConnection();
 
 				if (resultSet.next()) {
 					exportResultSetToVariables(resultSet, parent);
@@ -318,8 +322,6 @@ public class DBQueryExecutor {
 			System.out.println("ERROR EXECUTING QUERY: " + immediateParentId);
 			logger.error("ERROR EXECUTING QUERY: " + immediateParentId);
 			System.exit(1);
-		} finally {
-			cleanUpConnection(connection, statement, null);
 		}
 
 	}
@@ -443,6 +445,8 @@ public class DBQueryExecutor {
 		} catch (SQLException sqle) {
 			System.out.println(String.format(QUERY_EXECUTION_ERROR_MESSAGE_PATERN, query) + sqle);
 			throw sqle;
+		} finally {
+			cleanUpConnection(connection, statement, null);
 		}
 	}
 
@@ -486,7 +490,7 @@ public class DBQueryExecutor {
 		return resultSet;
 	}
 
-	public void cleanUpConnection(Connection connection, Statement statement, ResultSet resultSet) {
+	public static void cleanUpConnection(Connection connection, Statement statement, ResultSet resultSet) {
 
 		if (resultSet != null) {
 			try {

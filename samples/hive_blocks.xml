@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/workspace/Hive-Blocks/samples/">
+<blocks id="hive-blocks" base-path="C:/Users/manojkumar.vohra/Desktop/hive-blocks-latest/hive-blocks/samples/">
   <block id="first-block">
     
     <!-- GLOBAL BLOCK LEVEL VARIABLES-->
