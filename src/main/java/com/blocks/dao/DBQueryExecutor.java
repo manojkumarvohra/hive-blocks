@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.log4j.Logger;
 import org.hibernate.engine.jdbc.internal.BasicFormatterImpl;
 
@@ -411,6 +413,20 @@ public class DBQueryExecutor {
 
 		return queries;
 	}
+	
+	private static void authenticateUgi(String principal, String keytab) {
+
+		try {
+			Configuration conf = new Configuration();
+			conf.set("hadoop.security.authentication", "kerberos");
+			UserGroupInformation.setConfiguration(conf);
+			UserGroupInformation.loginUserFromKeytab(principal, keytab);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			System.out.println("Error while executing program authenticateUgi\n " + t);
+			System.exit(1);
+		}
+	}
 
 	public static void executeUpdate(DBConfiguration dbConfiguration, String query, Connection connection,
 			Statement statement) throws ClassNotFoundException, SQLException {
@@ -419,6 +435,13 @@ public class DBQueryExecutor {
 		String dbUrl = dbConfiguration.getDbUrl();
 		String dbUserid = dbConfiguration.getDbUserid();
 		String dbPassword = dbConfiguration.getDbPassword();
+		boolean isKerberised = dbConfiguration.isKerberised();
+		
+		if(isKerberised){
+			String principal = dbConfiguration.getPrincipal();
+			String keytab = dbConfiguration.getKeytab();
+			authenticateUgi(principal, keytab);
+		}
 
 		try {
 			Class.forName(jdbcDriver);
@@ -457,6 +480,13 @@ public class DBQueryExecutor {
 		String dbUrl = dbConfiguration.getDbUrl();
 		String dbUserid = dbConfiguration.getDbUserid();
 		String dbPassword = dbConfiguration.getDbPassword();
+		boolean isKerberised = dbConfiguration.isKerberised();
+		
+		if(isKerberised){
+			String principal = dbConfiguration.getPrincipal();
+			String keytab = dbConfiguration.getKeytab();
+			authenticateUgi(principal, keytab);
+		}
 
 		try {
 			Class.forName(jdbcDriver);

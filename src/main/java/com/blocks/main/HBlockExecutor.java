@@ -28,7 +28,7 @@ public class HBlockExecutor {
 
 		Blocks blocks = null;
 		HBlocksJobParser hBlocksJobParser = new HBlocksJobParser();
-		
+
 		try {
 			blocks = hBlocksJobParser.getBlocksFromXML(args[0]);
 		} catch (FileNotFoundException e) {
@@ -43,12 +43,12 @@ public class HBlockExecutor {
 		hBlocksJobParser.printXML(args);
 		System.out.println(
 				"\n------------------------------------------------------------------------------------------\n");
-		
+
 		System.out.println("Validating Blocks Semantics");
 		HBlocksSemanticsValidator semanticsValidator = new HBlocksSemanticsValidator();
 		semanticsValidator.validate(blocks);
 		System.out.println("Blocks Semantics are correct");
-		
+
 		DBConfiguration dbConfiguration = getDbConfiguration(args);
 		BlocksExecutor blocksExecutor = new BlocksExecutor();
 		blocksExecutor.execute(blocks, dbConfiguration);
@@ -69,8 +69,12 @@ public class HBlockExecutor {
 			String dbUrl = dbProperties.getProperty("dburl");
 			String dbUserid = dbProperties.getProperty("dbuserid");
 			String dbPassword = dbProperties.getProperty("dbpassword");
+			boolean isKerberised = Boolean.valueOf(dbProperties.getProperty("kerberised"));
+			String principal = dbProperties.getProperty("dbpassword");
+			String keytab = dbProperties.getProperty("dbpassword");
 
-			dbConfiguration = new DBConfiguration(jdbcDriver, dbUrl, dbUserid, dbPassword);
+			dbConfiguration = new DBConfiguration(jdbcDriver, dbUrl, dbUserid, dbPassword, isKerberised, principal,
+					keytab);
 
 		} catch (IOException ex) {
 			String errorMessage = "Unable to load db properties." + ex.getMessage();
@@ -86,5 +90,5 @@ public class HBlockExecutor {
 		}
 
 		return dbConfiguration;
-	}	
+	}
 }
